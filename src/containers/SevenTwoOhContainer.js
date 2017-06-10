@@ -2,15 +2,14 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import Friends from '../components/Friends'
-import CodeApp from '../components/CodeApp'
-import Project from '../components/Project'
+import Game from '../components/Game'
 
-export default class PairmotelyContainer extends React.Component{
+export default class SevenTwoOhContainer extends React.Component{
   constructor(){
     super()
 
     this.state = {
-      projects: [],
+      cards: [],
       users: []
     }
   }
@@ -23,10 +22,15 @@ export default class PairmotelyContainer extends React.Component{
   }
 
   componentDidMount(){
-    return fetch('http://localhost:3000/users')
+    // fetch('http://localhost:3000/users')
+    // .then( res => res.json() )
+    // .then( data => this.setState({
+    //   users: data
+    // }))
+    return fetch('https://deckofcardsapi.com/api/deck/new/draw/?count=52')
     .then( res => res.json() )
     .then( data => this.setState({
-      users: data
+      cards: data.cards
     }))
   }
 
@@ -43,7 +47,7 @@ export default class PairmotelyContainer extends React.Component{
           <h2>Welcome {sessionStorage.User}</h2>
           <button onClick={ () => this.logOut() }>Log Out</button>
         </div>
-        <Route exact path="/home/newproject" render={ () => <Project /> } />
+        <Route exact path="/home/newgame" render={ () => <Game cards={this.state.cards}/> } />
         <Route exact path="/home/friends" render={ () => <Friends users={this.state.users}/> } />
       </div>
     )

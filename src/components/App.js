@@ -1,9 +1,8 @@
 import React from 'react'
-import CodeApp from './CodeApp'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import CreateUser from './CreateUser'
 import LoginForm from './LoginForm'
-import PairmotelyContainer from '../containers/PairmotelyContainer'
+import SevenTwoOhContainer from '../containers/SevenTwoOhContainer'
 
 export default function App(){
 
@@ -11,10 +10,10 @@ export default function App(){
     <div>
       <Router>
         <Switch>
-          <Route path="/home" component={PairmotelyContainer}/>
+          <Route path="/home" component={SevenTwoOhContainer}/>
           <Route exact path="/login" component={LoginForm}/>
           <Route exact path="/create" component={CreateUser} />
-          <Route exact path="/newproject" component={CodeApp} />
+          {/* <Route exact path="/newgame" component={CodeApp} /> */}
         </Switch>
       </Router>
     </div>

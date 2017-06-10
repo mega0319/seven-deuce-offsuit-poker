@@ -30,8 +30,12 @@ class LoginForm extends React.Component{
     console.log("IN HANDLE LOGIN")
     logIn(this.state.username, this.state.password)
     .then( data => {
+      if(data.token){
+
+
       sessionStorage.setItem('Authorization', data.token)
       sessionStorage.setItem('User', data.user)
+    }
     }  )
     .then(() => this.props.history.push('/home'))
   }
@@ -48,7 +52,7 @@ class LoginForm extends React.Component{
 
           <div className="col-md-5">
 
-            <h1> Pairmotely! </h1>
+            <h1> 72offsuit </h1>
 
           </div>
         </div>
