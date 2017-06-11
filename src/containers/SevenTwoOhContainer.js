@@ -22,11 +22,6 @@ export default class SevenTwoOhContainer extends React.Component{
   }
 
   componentDidMount(){
-    // fetch('http://localhost:3000/users')
-    // .then( res => res.json() )
-    // .then( data => this.setState({
-    //   users: data
-    // }))
     return fetch('https://deckofcardsapi.com/api/deck/new/draw/?count=52')
     .then( res => res.json() )
     .then( data => this.setState({
@@ -42,10 +37,9 @@ export default class SevenTwoOhContainer extends React.Component{
   render(){
     return(
       <div>
-        <NavBar />
-        <div className="container">
-          <h2>Welcome {sessionStorage.User}</h2>
-          <button onClick={ () => this.logOut() }>Log Out</button>
+        <NavBar logOut={() => this.logOut() }/>
+        <div className="container-fluid">
+
         </div>
         <Route exact path="/home/newgame" render={ () => <Game cards={this.state.cards}/> } />
         <Route exact path="/home/friends" render={ () => <Friends users={this.state.users}/> } />

@@ -1,5 +1,7 @@
 import React from 'react'
-import PlayerHand from '../components/PlayerHand'
+import Player from '../components/Player'
+import styles from '../css/Board.css'
+
 
 export default class BoardContainer extends React.Component{
   //cards are being passed in shuffled as props
@@ -11,19 +13,23 @@ export default class BoardContainer extends React.Component{
       currentDeck: [],
       board: [],
       dealt: false,
-      playerHand: []
+      playerHand: [],
+      pot: 0
     }
-  }
-
-  playerHandCards(){
-
   }
 
   createPlayerHand(currentDeck){
     let playerCardArr = []
-    playerCardArr.push(currentDeck.shift())
-    playerCardArr.push(currentDeck.shift())
-    // debugger
+    let numOfPlayers = this.props.players.length
+
+    while(numOfPlayers > 0){
+      let array = []
+      array.push(currentDeck.shift())
+      array.push(currentDeck.shift())
+      playerCardArr.push(array)
+      numOfPlayers -= 1
+    }
+    debugger
     this.setState({
       currentDeck: currentDeck,
       playerHand: playerCardArr
@@ -31,31 +37,34 @@ export default class BoardContainer extends React.Component{
 
   }
 
+
   dealCards(){
-  let currentDeck = this.props.cards
-  let flop = []
+    let currentDeck = this.props.cards
+    let flop = []
     flop.push(currentDeck.shift())
     flop.push(currentDeck.shift())
     flop.push(currentDeck.shift())
-  this.setState({
-    currentDeck: currentDeck,
-    board: flop,
-    dealt: true
-  })
-  this.createPlayerHand(currentDeck)
+    this.setState({
+      currentDeck: currentDeck,
+      board: flop,
+      dealt: true
+    })
+    this.createPlayerHand(currentDeck)
   }
 
   nextCard(){
     if(this.state.board.length < 5){
-    let currentDeck = this.state.currentDeck
-    let river = currentDeck.shift()
-    let board = this.state.board.concat( river )
-    // debugger
-    this.setState({
-      currentDeck: currentDeck,
-      board: board
-    })
-  }
+      let currentDeck = this.state.currentDeck
+      let anotherCard = currentDeck.shift()
+      let board = this.state.board.concat( anotherCard )
+      // debugger
+      this.setState({
+        currentDeck: currentDeck,
+        board: board
+      })
+    }else{
+
+    }
   }
 
   fold(){
@@ -64,28 +73,75 @@ export default class BoardContainer extends React.Component{
     })
   }
 
+  bet(value){
+    const updatePot = parseInt(this.state.pot) + parseInt(value)
+    this.setState({ pot: updatePot })
+    this.nextCard()
+
+  }
 
   render(){
-  if(this.state.dealt){
+    if(this.state.dealt){
 
-  let showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
+      let showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
 
+      let hands = []
+      this.state.playerHand.forEach( (hand, idx) => {
+        this.props.players.map( (player, index) => {
+          if (idx === index){
+            hands.push(
+              <Player
+                position={index + 1}
+                key={player.username}
+                player={player}
+                board={this.state.board}
+                hand={hand}
+                nextCard={ () => this.nextCard() }
+                fold={ () => this.fold() }
+                bet={ (value) => this.bet(value) }
+              />
+            )
+            console.log(player)
+          }
+        }
+      )
+
+    })
+
+    console.log(hands)
     return(
       <div>
-        {showCards}
-        <h4>Your Hand</h4>
-        <PlayerHand hand={this.state.playerHand} nextCard={this.nextCard.bind(this) } fold={this.fold.bind(this)}/>
+
+          {showCards}
+          <h4 className="board-text pot">Pot: {this.state.pot}</h4>
+          <h4>Your Hand</h4>
+          {hands}
       </div>
     )
   }else{
 
-      return(
-        <div>
-          <button onClick={() => this.dealCards() }>Deal!</button>
+    return(
+      <div className="container-fluid">
+        <div className="row">
+
         </div>
-      )
+        <div className="row">
+
+        </div>
+        <div className="row">
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4"></div>
+          <div class="col-md-4"></div>
+        </div>
+        <button className="btn btn-default" onClick={() => this.dealCards() }>Deal!</button>
+      </div>
+    )
   }
-  }
+}
 
 
 

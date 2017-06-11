@@ -3,6 +3,7 @@ import { logIn } from '../apis/Api'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 
+
 class LoginForm extends React.Component{
   constructor(){
     super()
@@ -33,9 +34,12 @@ class LoginForm extends React.Component{
       if(data.token){
 
 
-      sessionStorage.setItem('Authorization', data.token)
-      sessionStorage.setItem('User', data.user)
-    }
+        sessionStorage.setItem('Authorization', data.token)
+        sessionStorage.setItem('User', data.user)
+        sessionStorage.setItem('Chips', data.play_chips)
+      }else{
+        sessionStorage.setItem('Error', data.error)
+      }
     }  )
     .then(() => this.props.history.push('/home'))
   }
@@ -45,72 +49,34 @@ class LoginForm extends React.Component{
   render(){
 
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-5">
-          </div>
-
-          <div className="col-md-5">
-
-            <h1> 72offsuit </h1>
-
-          </div>
-        </div>
-        <div className="row"></div>
-        <div className="row">
-          <div className="col-md-5">
-          </div>
-
-          <div className="col-md-5">
-
-            <h3> Please Log In </h3>
-          </div>
-        </div>
-
-
+      <div className="full-form container-fluid">
+        <img src={require('../seven-deuce.jpg')} alt="" width="250" height="200"/>
+        {sessionStorage.getItem("Error") ? <p className="error">{sessionStorage.getItem("Error")}</p> : null}
+        {sessionStorage.removeItem("Error")}
+        <h3> Please Log In </h3>
         <form onSubmit={(e) => this.handleLogIn(e) }>
-          <div className="row">
-            <div className="col-md-5">
+          <div className="form-group" >
+            <input className="form-control form-custom" type="text" value={this.state.username} placeholder="username"
+              onChange={ (e) => this.handleChange(e, "username")} />
             </div>
 
-            <div className="col-md-5">
+            <div className="form-group" >
+              <input className="form-control form-custom" type="password" value={this.state.password} placeholder="password"
+                onChange={ (e) => this.handleChange(e, "password")} />
 
-              <input type="text" value={this.state.username} placeholder="username"
-                onChange={ (e) => this.handleChange(e, "username")} />
-
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-5">
-              </div>
-
-              <div className="col-md-5">
-
-                <input type="password" value={this.state.password} placeholder="password"
-                  onChange={ (e) => this.handleChange(e, "password")} />
+                <div className="form-group" >
+                  <br /><input className="btn-lg btn-default" type="submit" value="Log In"/>
                 </div>
               </div>
+              <div className="form-group" >
 
-              <div className="row">
-                <div className="col-md-5">
-                </div>
-
-                <div className="col-md-5">
-                  <input type="submit" value="Log In"/>
-                  <div>
-                    <Link to="/create" >Create New Account
-                  </Link>
-                </div>
-
+                <Link to="/create" >Create New Account </Link>
               </div>
-            </div>
-            {/* <button onClick={ () => this.createUserMode() }> Create New Account </button> */}
+            </form>
+          </div>
 
-          </form>
-        </div>
-      )
+        )
+      }
+
     }
-
-  }
-  export default withRouter(LoginForm)
+    export default withRouter(LoginForm)

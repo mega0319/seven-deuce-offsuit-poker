@@ -17,12 +17,12 @@ export default class Game extends React.Component{
     })
   }
 
-  // getRandomInt() {
-  //   return Math.floor(Math.random() * (52 - 1 + 1)) + 1
-  // }
-
-  componentWillUpdate(){
-
+  componentDidMount(){
+    fetch('http://localhost:3000/users')
+    .then( res => res.json() )
+    .then( data => this.setState({
+      players: data
+    }))
   }
 
   fisherYatesShuffle(cards){
@@ -50,9 +50,8 @@ export default class Game extends React.Component{
       let shuffledCards = this.fisherYatesShuffle(cards)
 
       return(
-        <div>
+        <div  className="full-board container">
 
-          <h4>BOARD</h4>
           <BoardContainer cards={shuffledCards} players={this.state.players} />
 
         </div>

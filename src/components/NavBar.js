@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import styles from '../css/NavBar.css'
 
-export default function NavBar(){
+export default function NavBar(props){
 
   return (
-    <nav className={`navbar navbar-black`}>
+    <nav className="navbar navbar-inverse">
       <div className='container-fluid'>
         <div className='navbar-header'>
           <a className='navbar-brand'>
-            seven-two-offsuit
+            seven-deuce-offsuit
           </a>
         </div>
 
@@ -18,7 +19,9 @@ export default function NavBar(){
             <li><Link to="/home/newgame">New Table</Link></li>
             <li><Link to="/games">Find Table</Link></li>
             <li><Link to="/home/friends">Friends</Link></li>
-            <li><Link to="/home/messages">Messages</Link></li>
+            <li className="navbar-message">Welcome {sessionStorage.User} </li>
+            <li><button className="btn btn-default" onClick={ () => props.logOut() }>Log Out</button>
+</li>
           </ul>
         </div>
       </div>

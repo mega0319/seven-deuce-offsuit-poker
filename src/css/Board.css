@@ -1,0 +1,40 @@
+/*.something {
+  border: 5px solid transparent;
+  border-style: inset;
+  width:560px;
+  margin:0 auto;
+
+}*/
+
+.center-board {
+    position: absolute;
+    left: 24%;
+    top: 50%%;
+    width: 60%;
+    text-align: center;
+    font-size: 18px;
+  }
+
+body {
+  background: black;
+}
+
+.full-board{
+  background: black;
+  background-image: url('../table.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.board-text{
+  color: white;
+}
+
+/*.position-1{
+  position: absolute;
+  left: 24%;
+  top: 40%;
+  width: 60%;
+  text-align: center;
+  font-size: 18px;
+}*/
