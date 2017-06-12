@@ -7,34 +7,95 @@
 }*/
 
 .center-board {
-    position: absolute;
-    left: 24%;
-    top: 50%%;
-    width: 60%;
+    position: fixed;
+    left: 25%;
+    top: 20%;
+    width: 50%;
     text-align: center;
     font-size: 18px;
   }
 
-body {
-  background: black;
+.game-container{
+  position: relative;
 }
 
 .full-board{
-  background: black;
-  background-image: url('../table.jpg');
-  background-size: cover;
+  margin: 0 auto;
+  background: #800020;
+  background-image: url('../field.png');
+  background-size: contain;
   background-repeat: no-repeat;
+  width: 1200px;
+  height: 600px;
 }
 
 .board-text{
   color: white;
 }
 
-/*.position-1{
+.position-1{
   position: absolute;
-  left: 24%;
+  left: 32%;
+  top: 68%;
+  width: 40%;
+  text-align: center;
+  font-size: 18px;
+}
+
+
+.position-2{
+  position: absolute;
+  left: 55%;
+  top: 64%;
+  width: 40%;
+  text-align: center;
+  font-size: 18px;
+}
+
+.position-3{
+  position: absolute;
+  left: 70%;
   top: 40%;
-  width: 60%;
+  width: 40%;
+  text-align: center;
+  font-size: 18px;
+}
+
+.position-4{
+  position: absolute;
+  left: 70%;
+  top: 0%;
+  width: 40%;
+  text-align: center;
+  font-size: 18px;
+}
+
+/*.position-5{
+  position: relative;
+  left: -10%;
+  top: 70%;
+  bottom: 30%;
+  width: 40%;
+  text-align: center;
+  font-size: 18px;
+}
+
+.position-6{
+  position: relative;
+  left: 0%;
+  top: 50%;
+  bottom: 10%;
+  width: 40%;
   text-align: center;
   font-size: 18px;
 }*/
+
+/*input, textarea{
+    background-color:#666;
+    color: #FFF;
+}*/
+
+.player-stats {
+  color: #FFF;
+  font-size: 10px;
+}

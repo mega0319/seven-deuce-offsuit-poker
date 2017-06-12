@@ -36,11 +36,8 @@ export default class SevenTwoOhContainer extends React.Component{
 
   render(){
     return(
-      <div>
+      <div className="homepage">
         <NavBar logOut={() => this.logOut() }/>
-        <div className="container-fluid">
-
-        </div>
         <Route exact path="/home/newgame" render={ () => <Game cards={this.state.cards}/> } />
         <Route exact path="/home/friends" render={ () => <Friends users={this.state.users}/> } />
       </div>

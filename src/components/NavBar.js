@@ -19,10 +19,11 @@ export default function NavBar(props){
             <li><Link to="/home/newgame">New Table</Link></li>
             <li><Link to="/games">Find Table</Link></li>
             <li><Link to="/home/friends">Friends</Link></li>
-            <li className="navbar-message">Welcome {sessionStorage.User} </li>
-            <li><button className="btn btn-default" onClick={ () => props.logOut() }>Log Out</button>
-</li>
+
           </ul>
+          <p className="navbar-message">Welcome {sessionStorage.User} </p>
+            <button className="btn btn-default" onClick={ () => props.logOut() }>Log Out</button>
+
         </div>
       </div>
     </nav>

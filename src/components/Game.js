@@ -9,6 +9,8 @@ export default class Game extends React.Component{
       cards: props.cards,
       players: []
     }
+
+
   }
 
   componentWillReceiveProps(){
@@ -50,7 +52,7 @@ export default class Game extends React.Component{
       let shuffledCards = this.fisherYatesShuffle(cards)
 
       return(
-        <div  className="full-board container">
+        <div className="game-container">
 
           <BoardContainer cards={shuffledCards} players={this.state.players} />
 

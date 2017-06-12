@@ -49,7 +49,8 @@ class LoginForm extends React.Component{
   render(){
 
     return (
-      <div className="full-form container-fluid">
+      <div id="black-wrapper">
+      <div className="full-form">
         <img src={require('../seven-deuce.jpg')} alt="" width="250" height="200"/>
         {sessionStorage.getItem("Error") ? <p className="error">{sessionStorage.getItem("Error")}</p> : null}
         {sessionStorage.removeItem("Error")}
@@ -74,7 +75,7 @@ class LoginForm extends React.Component{
               </div>
             </form>
           </div>
-
+        </div>
         )
       }
 

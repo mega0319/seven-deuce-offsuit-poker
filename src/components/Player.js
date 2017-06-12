@@ -22,10 +22,10 @@ export default class Player extends React.Component{
 
 
     return(
-      <div className={`position-${this.state.playerSeat}`}>
-        <h4>PlayerSeat: {this.state.playerSeat}</h4>
-        <h4>Playername: {this.state.playerName}</h4>
-        <h4>Chips: {this.state.playerChips} </h4>
+      <div className={`row position-${this.state.playerSeat}`}>
+        <p className='player-stats'> {this.state.playerSeat} </p>
+        <p className='player-stats'> {this.state.playerName}</p>
+        <p className='player-stats'> chips: {this.state.playerChips} </p>
 
       <PlayerHand
         position={this.state.playerSeat}

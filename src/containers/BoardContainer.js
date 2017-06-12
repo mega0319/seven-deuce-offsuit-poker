@@ -57,7 +57,6 @@ export default class BoardContainer extends React.Component{
       let currentDeck = this.state.currentDeck
       let anotherCard = currentDeck.shift()
       let board = this.state.board.concat( anotherCard )
-      // debugger
       this.setState({
         currentDeck: currentDeck,
         board: board
@@ -66,6 +65,7 @@ export default class BoardContainer extends React.Component{
 
     }
   }
+
 
   fold(){
     this.setState({
@@ -82,7 +82,7 @@ export default class BoardContainer extends React.Component{
 
   render(){
     if(this.state.dealt){
-
+      console.log(this.state.currentDeck)
       let showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
 
       let hands = []
@@ -110,18 +110,20 @@ export default class BoardContainer extends React.Component{
 
     console.log(hands)
     return(
-      <div>
+      <div className="full-board">
+        <div className="center-board">
 
           {showCards}
           <h4 className="board-text pot">Pot: {this.state.pot}</h4>
-          <h4>Your Hand</h4>
+        </div>
+
           {hands}
       </div>
     )
   }else{
 
     return(
-      <div className="container-fluid">
+      <div className="homepage">
         <div className="row">
 
         </div>
@@ -132,12 +134,7 @@ export default class BoardContainer extends React.Component{
 
         </div>
 
-        <div class="row">
-          <div class="col-md-4"></div>
-          <div class="col-md-4"></div>
-          <div class="col-md-4"></div>
-        </div>
-        <button className="btn btn-default" onClick={() => this.dealCards() }>Deal!</button>
+        <button className="btn-lg btn-default" onClick={() => this.dealCards() }>Deal!</button>
       </div>
     )
   }

@@ -1,3 +1,9 @@
 .navbar-message {
   color: white;
+  diplay: inline-block;
+}
+
+#bs-example-navbar-collapse-1 {
+  display: flex !important;
+  justify-content:space-between;
 }

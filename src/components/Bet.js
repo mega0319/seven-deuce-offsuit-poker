@@ -21,7 +21,7 @@ export default class Bet extends Component{
 
   render(){
     return(
-      <form className="form-group" onSubmit={(e) => this.handleBetSubmit(e) }>
+      <form className="board-inputs form-group" onSubmit={(e) => this.handleBetSubmit(e) }>
         <input  onChange={(e) => this.handleBetChange(e)} type="number" value={this.state.betAmount}/>
 
         <input className="btn btn-default" type="submit" value="Bet"/>
