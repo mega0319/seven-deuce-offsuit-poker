@@ -59,7 +59,7 @@ export default class BoardContainer extends React.Component{
     this.createPlayerHand(currentDeck)
   }
 
-  nextCard(){
+  nextCard(handSolve){
     if(this.state.board.length === 0){
       this.dealFlop()
     }else if(this.state.board.length < 5){
@@ -71,6 +71,7 @@ export default class BoardContainer extends React.Component{
         board: board
       })
     }else{
+      console.log(handSolve)
       this.sortAndDeclareWinner()
       this.props.shuffle()
     }
@@ -94,17 +95,16 @@ export default class BoardContainer extends React.Component{
     // })
   }
 
-  fold(){
-    this.setState({
-      playerHand: []
-    })
-  }
+  // fold(){
+  //   this.setState({
+  //     playerHand: []
+  //   })
+  // }
 
   bet(value){
     const updatePot = parseInt(this.state.pot) + parseInt(value)
     this.setState({ pot: updatePot })
     this.nextCard()
-
   }
 
   render(){

@@ -131,7 +131,7 @@ export default class PlayerHand extends React.Component{
       let handSolve = preSolve.slice(1)
       // debugger
 
-      
+
 
 
       if(this.props.position === 1){
@@ -143,7 +143,7 @@ export default class PlayerHand extends React.Component{
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}
             <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips}/>
-            <button className="btn btn-default" onClick={() => this.props.nextCard() }> Check </button>
+            <button className="btn btn-default" onClick={() => this.props.nextCard(handSolve) }> Check </button>
             <button className="btn btn-default" onClick={() => this.onFold() }> Fold </button>
           </div>
         )
