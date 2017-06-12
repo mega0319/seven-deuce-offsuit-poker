@@ -14,7 +14,6 @@ export default class PlayerHand extends React.Component{
 
   onFold(){
     this.setState({ folded: true})
-    this.props.fold()
   }
 
 
@@ -39,14 +38,17 @@ export default class PlayerHand extends React.Component{
       return cardRanks[secondCard[0]] - cardRanks[firstCard[0]]
     })
     const flushCards = this.findFlush(sortedHand)
-    const results = this.findPairsOrTrips(sortedHand)
+    const results = this.findPairsOrTripsOrQuads(sortedHand)
     const pairsArray = results[0]
     const tripsArray = results[1]
+    const quadsArray = results[2]
     debugger
-    if(flushCards.length > 0){
-      return `${flushCards[0]} high flush`
+    if(quadsArray.length > 0){
+      return `Four of a Kind ${quadsArray[0]}s`
     }else if(tripsArray.length >= 1 && pairsArray.length >= 1){
       return `Full House ${tripsArray[0]}s full of ${pairsArray[0]}s`
+    }else if(flushCards.length > 0){
+      return `${flushCards[0][0]} high flush`
     }else if(tripsArray.length >= 1){
       return `Three of a Kind ${tripsArray[0]}s`
     }else if(pairsArray.length === 2){
@@ -58,11 +60,12 @@ export default class PlayerHand extends React.Component{
     }
   }
 
-  findPairsOrTrips(handArray){
+  findPairsOrTripsOrQuads(handArray){
 
     const object = {};
     const pairs = [];
     const trips = [];
+    const quads = [];
 
     handArray.forEach( card => {
       if(!object[card[0]])
@@ -75,9 +78,11 @@ export default class PlayerHand extends React.Component{
         pairs.push(cardValue);
       }else if(object[cardValue] === 3){
         trips.push(cardValue)
+      }else if(object[cardValue] === 4){
+        quads.push(cardValue)
       }
     }
-    return [pairs, trips]
+    return [pairs, trips, quads]
   }
 
   findFlush(handArray){
@@ -97,7 +102,7 @@ export default class PlayerHand extends React.Component{
     }
     handArray.forEach( card => {
       if (card[1] === flushSuit)
-        flushCards.push(card)
+      flushCards.push(card)
     })
     return flushCards
   }
@@ -121,7 +126,7 @@ export default class PlayerHand extends React.Component{
       if(this.props.position === 1){
 
         return(
-          <div >
+          <div className="animated rollIn">
 
             {currentHand}
 
@@ -133,7 +138,7 @@ export default class PlayerHand extends React.Component{
         )
       }else{
         return(
-          <div >
+          <div className="animated rollIn">
             {currentHand}
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}
@@ -144,7 +149,7 @@ export default class PlayerHand extends React.Component{
       console.log(this.props.board.map( card => card.code) )
       return(
         <div>
-          <p>You are currently sitting out</p>
+          <p className="board-text">You are currently sitting out</p>
         </div>
       )
     }

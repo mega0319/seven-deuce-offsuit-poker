@@ -14,7 +14,8 @@ export default class BoardContainer extends React.Component{
       board: [],
       dealt: false,
       playerHand: [],
-      pot: 0
+      pot: 0,
+      phase: "pre-flop"
     }
   }
 
@@ -32,28 +33,34 @@ export default class BoardContainer extends React.Component{
     debugger
     this.setState({
       currentDeck: currentDeck,
-      playerHand: playerCardArr
+      playerHand: playerCardArr,
+      dealt: true
     })
 
   }
 
 
-  dealCards(){
-    let currentDeck = this.props.cards
+  dealFlop(){
+    let currentDeck = this.state.currentDeck
     let flop = []
     flop.push(currentDeck.shift())
     flop.push(currentDeck.shift())
     flop.push(currentDeck.shift())
     this.setState({
       currentDeck: currentDeck,
-      board: flop,
-      dealt: true
+      board: flop
     })
+  }
+
+  dealToPlayers(){
+    let currentDeck = this.props.cards
     this.createPlayerHand(currentDeck)
   }
 
   nextCard(){
-    if(this.state.board.length < 5){
+    if(this.state.board.length === 0){
+      this.dealFlop()
+    }else if(this.state.board.length < 5){
       let currentDeck = this.state.currentDeck
       let anotherCard = currentDeck.shift()
       let board = this.state.board.concat( anotherCard )
@@ -62,7 +69,7 @@ export default class BoardContainer extends React.Component{
         board: board
       })
     }else{
-
+      this.props.shuffle()
     }
   }
 
@@ -82,9 +89,10 @@ export default class BoardContainer extends React.Component{
 
   render(){
     if(this.state.dealt){
-      console.log(this.state.currentDeck)
-      let showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
-
+      let showCards
+      if(this.state.board.length > 0){
+        showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
+      }
       let hands = []
       this.state.playerHand.forEach( (hand, idx) => {
         this.props.players.map( (player, index) => {
@@ -110,14 +118,14 @@ export default class BoardContainer extends React.Component{
 
     console.log(hands)
     return(
-      <div className="full-board">
-        <div className="center-board">
+      <div className="full-board animated fadeIn">
+        <div className="center-board ">
 
-          {showCards}
+          {showCards ? showCards : null}
           <h4 className="board-text pot">Pot: {this.state.pot}</h4>
         </div>
 
-          {hands}
+        {hands}
       </div>
     )
   }else{
@@ -134,7 +142,7 @@ export default class BoardContainer extends React.Component{
 
         </div>
 
-        <button className="btn-lg btn-default" onClick={() => this.dealCards() }>Deal!</button>
+        <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
       </div>
     )
   }

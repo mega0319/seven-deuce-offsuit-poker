@@ -6,24 +6,36 @@ export default class Game extends React.Component{
     super(props)
 
     this.state = {
-      cards: props.cards,
+      cards: [],
       players: []
     }
-
-
   }
 
-  componentWillReceiveProps(){
-    this.setState({
-      cards: this.props.cards
-    })
-  }
+  // componentWillReceiveProps(){
+  //   this.setState({
+  //     cards: this.props.cards
+  //   })
+  // }
+
 
   componentDidMount(){
-    fetch('http://localhost:3000/users')
+    this.getCards()
+    this.getUsers()
+  }
+
+  getUsers(){
+    return fetch('http://localhost:3000/users')
     .then( res => res.json() )
     .then( data => this.setState({
       players: data
+    }))
+  }
+
+  getCards(){
+    return fetch('https://deckofcardsapi.com/api/deck/new/draw/?count=52')
+    .then( res => res.json() )
+    .then( data => this.setState({
+      cards: data.cards
     }))
   }
 
@@ -41,6 +53,11 @@ export default class Game extends React.Component{
     return cards;
   }
 
+  handleReshuffle(){
+    this.getCards()
+    .then( data => this.fisherYatesShuffle(this.state.cards) )
+    console.log("RESHUFFLED!")
+  }
 
 
 
@@ -54,7 +71,7 @@ export default class Game extends React.Component{
       return(
         <div className="game-container">
 
-          <BoardContainer cards={shuffledCards} players={this.state.players} />
+          <BoardContainer shuffle={this.handleReshuffle.bind(this) } cards={shuffledCards} players={this.state.players} />
 
         </div>
       )
