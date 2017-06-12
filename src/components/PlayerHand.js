@@ -44,19 +44,19 @@ export default class PlayerHand extends React.Component{
     const quadsArray = results[2]
     debugger
     if(quadsArray.length > 0){
-      return `Four of a Kind ${quadsArray[0]}s`
+      return `7Four of a Kind ${quadsArray[0]}s`
     }else if(tripsArray.length >= 1 && pairsArray.length >= 1){
-      return `Full House ${tripsArray[0]}s full of ${pairsArray[0]}s`
+      return `6Full House ${tripsArray[0]}s full of ${pairsArray[0]}s`
     }else if(flushCards.length > 0){
-      return `${flushCards[0][0]} high flush`
+      return `5${flushCards[0][0]} high flush`
     }else if(tripsArray.length >= 1){
-      return `Three of a Kind ${tripsArray[0]}s`
+      return `4Three of a Kind ${tripsArray[0]}s`
     }else if(pairsArray.length === 2){
-      return `Two pairs ${pairsArray[0]}s and ${pairsArray[1]}s`
+      return `3Two pairs ${pairsArray[0]}s and ${pairsArray[1]}s`
     }else if(pairsArray.length === 1){
-      return `Pair of ${pairsArray[0]}s`
+      return `2Pair of ${pairsArray[0]}s`
     }else{
-      return `${sortedHand[0][0]} high`
+      return `1${sortedHand[0][0]} high`
     }
   }
 
@@ -107,6 +107,13 @@ export default class PlayerHand extends React.Component{
     return flushCards
   }
 
+  handPoints(points){
+    let handPoints = parseInt(points)
+    let handPlayerObj = { player: this.props.player, points: points }
+    this.props.reveal(handPlayerObj)
+    debugger
+  }
+
 
   render(){
     console.log(this.props)
@@ -116,13 +123,17 @@ export default class PlayerHand extends React.Component{
 
       const codes = fullHand.map( card => card.code )
 
-      console.log(codes)
 
-      let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
+      let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card animated rollIn" src={el.image} alt="boohoo" width="100" height="120"/> )
 
-      let handSolve = this.solveHand(codes)
+      let preSolve = this.solveHand(codes)
+
+      let handSolve = preSolve.slice(1)
       // debugger
-      console.log(this.props.player)
+
+      
+
+
       if(this.props.position === 1){
 
         return(
@@ -138,7 +149,7 @@ export default class PlayerHand extends React.Component{
         )
       }else{
         return(
-          <div className="animated rollIn">
+          <div className="">
             {currentHand}
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}

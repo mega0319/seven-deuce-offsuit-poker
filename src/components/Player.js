@@ -37,6 +37,8 @@ export default class Player extends React.Component{
         fold={ () => this.props.fold() }
         bet={ (value) => this.props.bet(value) }
         updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
+        reveal= { () => this.props.reveal() }
+        phase={this.props.phase}
       />
 
       </div>

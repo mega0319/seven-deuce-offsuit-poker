@@ -15,7 +15,10 @@ export default class BoardContainer extends React.Component{
       dealt: false,
       playerHand: [],
       pot: 0,
-      phase: "pre-flop"
+      phase: "pre-flop",
+      sortedFinalHands: [],
+      winner: '',
+      winningHand: ''
     }
   }
 
@@ -30,7 +33,6 @@ export default class BoardContainer extends React.Component{
       playerCardArr.push(array)
       numOfPlayers -= 1
     }
-    debugger
     this.setState({
       currentDeck: currentDeck,
       playerHand: playerCardArr,
@@ -69,10 +71,28 @@ export default class BoardContainer extends React.Component{
         board: board
       })
     }else{
+      this.sortAndDeclareWinner()
       this.props.shuffle()
     }
   }
 
+  findWinningHand(playerHandObj){
+    let array = this.state.sortedFinalHands.concat(playerHandObj)
+    this.setState({
+      sortedFinalHands: array
+    })
+  }
+
+  sortAndDeclareWinner(){
+    let hands = this.state.sortedFinalHands.sort( (a, b) => {
+      return b.points - a.points
+    })
+    // debugger
+    // this.setState({
+    //   winner: hands[0].player,
+    //   phase: "river"
+    // })
+  }
 
   fold(){
     this.setState({
@@ -90,8 +110,9 @@ export default class BoardContainer extends React.Component{
   render(){
     if(this.state.dealt){
       let showCards
+      console.log(this.state.sortedFinalHands)
       if(this.state.board.length > 0){
-        showCards = this.state.board.map( (el,index) => <img key={index} className="card" src={el.image} alt="boohoo" width="100" height="120"/> )
+        showCards = this.state.board.map( (el,index) => <img key={index} className="card animated slideInDown" src={el.image} alt="boohoo" width="100" height="120"/> )
       }
       let hands = []
       this.state.playerHand.forEach( (hand, idx) => {
@@ -107,21 +128,22 @@ export default class BoardContainer extends React.Component{
                 nextCard={ () => this.nextCard() }
                 fold={ () => this.fold() }
                 bet={ (value) => this.bet(value) }
+                reveal={ (playerHandObj) => this.findWinningHand(playerHandObj)}
+                phase={this.state.phase}
               />
             )
-            console.log(player)
           }
         }
       )
 
     })
 
-    console.log(hands)
     return(
       <div className="full-board animated fadeIn">
         <div className="center-board ">
 
           {showCards ? showCards : null}
+          {this.state.phase === "river" ? <p> {this.state.winner} </p> : null}
           <h4 className="board-text pot">Pot: {this.state.pot}</h4>
         </div>
 
