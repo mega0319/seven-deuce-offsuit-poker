@@ -65,20 +65,23 @@ export default class BoardContainer extends React.Component{
   }
 
   createPlayerHand(currentDeck){
-    let playerCardArr = []
-    let numOfPlayers = this.state.players.length
+    let newPlayerObjArr = this.state.players.map( player => {
+      let hand = []
+      hand.push(currentDeck.shift())
+      hand.push(currentDeck.shift())
+      return { playerName: player.username, hand: hand }
+    })
+    // while(numOfPlayers > 0){
+    //   let playerHandObj = {}
+    //   array.push(currentDeck.shift())
+    //   array.push(currentDeck.shift())
+    //   playerCardArr.push(array)
+    //   numOfPlayers -= 1
 
-    while(numOfPlayers > 0){
-      let array = []
-      array.push(currentDeck.shift())
-      array.push(currentDeck.shift())
-      playerCardArr.push(array)
-      numOfPlayers -= 1
-    }
     this.createTableRequest()
     this.setState({
       currentDeck: currentDeck,
-      playerHand: playerCardArr,
+      playerHand: newPlayerObjArr,
       dealt: true
     })
 
@@ -184,21 +187,21 @@ export default class BoardContainer extends React.Component{
   render(){
     if(this.state.dealt && this.state.currentDeck.length > 0){
       let showCards
-      console.log("hello",this.state.sortedFinalHands)
       if(this.state.board.length > 0){
         showCards = this.state.board.map( (el,index) => <img key={index} className="card animated slideInDown" src={el.image} alt="boohoo" width="100" height="120"/> )
       }
       let hands = []
-      this.state.playerHand.forEach( (hand, idx) => {
+
+      this.state.playerHand.forEach( (handInfo, idx) => {
         this.state.players.map( (player, index) => {
-          if (idx === index){
+          if (handInfo.playerName === player.username){
             hands.push(
               <Player
                 position={index + 1}
                 key={player.username}
                 player={player}
                 board={this.state.board}
-                hand={hand}
+                hand={handInfo.hand}
                 nextCard={ () => this.nextCard() }
                 fold={ () => this.fold() }
                 bet={ (value) => this.bet(value) }
@@ -211,7 +214,6 @@ export default class BoardContainer extends React.Component{
       )
 
     })
-
     return(
       <div className="full-board animated fadeIn">
         <div className="center-board ">
@@ -230,7 +232,7 @@ export default class BoardContainer extends React.Component{
       <div className="homepage">
 
         <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
-        
+
       </div>
     )
   }
