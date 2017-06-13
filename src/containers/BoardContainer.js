@@ -78,7 +78,7 @@ export default class BoardContainer extends React.Component{
     //   playerCardArr.push(array)
     //   numOfPlayers -= 1
 
-    this.createTableRequest()
+    this.createTableRequest(newPlayerObjArr)
     this.setState({
       currentDeck: currentDeck,
       playerHand: newPlayerObjArr,
@@ -87,16 +87,19 @@ export default class BoardContainer extends React.Component{
 
   }
 
-  createTableRequest(){
+  createTableRequest(newPlayerObjArr){
+    // console.log("players", this.state.players)
+    let playerIDs = this.state.players.map( player => player.id )
     return fetch('http://localhost:3000/poker_tables', {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       method: "POST",
-      body: JSON.stringify( {poker_table:
+      body: JSON.stringify(
+        {poker_table:
       {
-        name: "TABLE ONE",
+        name: this.state.tableName,
         creator_id: sessionStorage.getItem("user_id"),
         board_cards: '',
         turns: 0,
@@ -105,8 +108,14 @@ export default class BoardContainer extends React.Component{
         small_blind: 5,
         big_blind: 10,
         current_turn_position: 1,
-        user_id: sessionStorage.getItem("user_id")
-      }})
+
+      },user_updates:
+      {
+        user_id: playerIDs,
+        hands: newPlayerObjArr
+      }
+
+    })
     }).then(res => res.json() )
     .then(console.log)
   }
