@@ -8,17 +8,25 @@ export default class PlayerHand extends React.Component{
 
     this.state = {
       hand: props.hand,
-      folded: false
+      folded: false,
+      phase: props.phase
     }
   }
 
-  onFold(){
-    this.setState({ folded: true})
+  componentWillReceiveProps(props){
+    this.setState({ phase: props.phase})
   }
 
+  // shouldComponentUpdate(){
+  //   this.state.phase === "flop" || this.state.phase === "turn" || this.state.phase === "pre-flop"
+  // }
+
+  onFold(){
+    this.setState({ folded: true })
+  }
 
   solveHand(fullHand){
-    //fullHand = ["2D", "QH", "6C", "9D", "6S", "0C"]
+    //example for fullHand = ["2D", "QH", "6C", "9D", "6S", "0C"]
     const cardRanks = {
       "2" : 2,
       "3" : 3,
@@ -85,6 +93,15 @@ export default class PlayerHand extends React.Component{
     return [pairs, trips, quads]
   }
 
+  findStraight(handArray){
+    let straightCards = []
+    handArray.forEach( (card, idx) => {
+      if (card[0] + 1 === handArray[idx + 1][0]){
+        straightCards.push(card)
+      }
+    })
+  }
+
   findFlush(handArray){
     const object = {}
     const flushCards = []
@@ -109,28 +126,26 @@ export default class PlayerHand extends React.Component{
 
   handPoints(points){
     let handPoints = parseInt(points)
-    let handPlayerObj = { player: this.props.player, points: points }
+    debugger
+    let handPlayerObj = { player: this.props.player, points: handPoints }
     this.props.reveal(handPlayerObj)
     debugger
   }
 
-
   render(){
     console.log(this.props)
+
     if(this.state.hand && !this.state.folded){
 
       const fullHand = this.props.board.concat(this.props.hand)
 
       const codes = fullHand.map( card => card.code )
 
-
       let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card animated rollIn" src={el.image} alt="boohoo" width="100" height="120"/> )
 
       let preSolve = this.solveHand(codes)
 
       let handSolve = preSolve.slice(1)
-      // debugger
-
 
 
 
@@ -138,21 +153,27 @@ export default class PlayerHand extends React.Component{
 
         return(
           <div className="animated rollIn">
-
+            <p className="board-text">{this.state.phase}</p>
             {currentHand}
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}
+
             <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips}/>
+
             <button className="btn btn-default" onClick={() => this.props.nextCard(handSolve) }> Check </button>
+
             <button className="btn btn-default" onClick={() => this.onFold() }> Fold </button>
+
           </div>
         )
       }else{
         return(
           <div className="">
+
             {currentHand}
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}
+
           </div>
         )
       }
@@ -160,7 +181,9 @@ export default class PlayerHand extends React.Component{
       console.log(this.props.board.map( card => card.code) )
       return(
         <div>
+
           <p className="board-text">You are currently sitting out</p>
+
         </div>
       )
     }

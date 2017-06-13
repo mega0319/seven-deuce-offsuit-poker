@@ -14,7 +14,6 @@ export default function App(){
           <Route path="/home" component={SevenTwoOhContainer}/>
           <Route exact path="/login" component={LoginForm}/>
           <Route exact path="/create" component={CreateUser} />
-          {/* <Route exact path="/newgame" component={CodeApp} /> */}
         </Switch>
       </Router>
     </div>

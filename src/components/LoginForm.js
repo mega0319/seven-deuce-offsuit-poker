@@ -32,19 +32,16 @@ class LoginForm extends React.Component{
     logIn(this.state.username, this.state.password)
     .then( data => {
       if(data.token){
-
-
         sessionStorage.setItem('Authorization', data.token)
         sessionStorage.setItem('User', data.user)
+        sessionStorage.setItem('user_id', data.user_id)
         sessionStorage.setItem('Chips', data.play_chips)
       }else{
         sessionStorage.setItem('Error', data.error)
       }
-    }  )
+    })
     .then(() => this.props.history.push('/home'))
   }
-
-
 
   render(){
 
