@@ -24,6 +24,8 @@ export default class Player extends React.Component{
 
         <PlayerHand
           position={this.props.position}
+          currentPlayerPos={this.props.currentPlayerPos}
+          handlePlayerAction={() => this.props.handlePlayerAction()}
           key={this.props.player.username}
           player={this.props.player.username}
           board={this.props.board}

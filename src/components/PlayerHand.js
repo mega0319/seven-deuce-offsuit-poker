@@ -182,7 +182,7 @@ export default class PlayerHand extends React.Component{
 
 
 
-      if(this.props.position === 1){
+      if(this.props.currentPlayerPos === this.props.position){
 
         return(
           <div className="animated rollIn">
@@ -192,7 +192,7 @@ export default class PlayerHand extends React.Component{
 
             <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips}/>
 
-            <button className="btn btn-default" onClick={() => this.props.nextCard(handSolve) }> Check </button>
+            <button className="btn btn-default" onClick={() => this.props.handlePlayerAction() }> Check </button>
 
             <button className="btn btn-default" onClick={() => this.onFold() }> Fold </button>
           </div>
