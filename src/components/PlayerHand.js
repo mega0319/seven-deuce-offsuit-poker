@@ -110,6 +110,8 @@ export default class PlayerHand extends React.Component{
       object[card[0]] += 1;
     })
 
+
+
     for (const cardValue in object) {
       if(object[cardValue] === 2) {
         pairs.push(cardValue);
@@ -162,6 +164,7 @@ export default class PlayerHand extends React.Component{
     this.props.reveal(handPlayerObj)
   }
 
+
   render(){
     console.log(this.props)
 
@@ -192,7 +195,6 @@ export default class PlayerHand extends React.Component{
             <button className="btn btn-default" onClick={() => this.props.nextCard(handSolve) }> Check </button>
 
             <button className="btn btn-default" onClick={() => this.onFold() }> Fold </button>
-
           </div>
         )
       }else{

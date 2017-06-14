@@ -5,7 +5,7 @@ export default class Player extends React.Component{
   constructor(props){
     super(props)
 
-    this.state = { playerChips: props.player.play_chips }
+    this.state = { playerChips: props.player.play_chips + props.winnings }
   }
 
   updatePlayChips(betAmount){
@@ -34,6 +34,7 @@ export default class Player extends React.Component{
           updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
           reveal= { () => this.props.reveal() }
           phase={this.props.phase}
+          redeal={() => this.props.redeal()}
         />
       </div>
     )

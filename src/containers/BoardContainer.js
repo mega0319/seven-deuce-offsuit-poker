@@ -10,6 +10,7 @@ export default class BoardContainer extends React.Component{
 
     this.state = {
       tableName: '',
+      tableID: '',
       deckID: '',
       board: [],
       players: [],
@@ -20,6 +21,7 @@ export default class BoardContainer extends React.Component{
       dealt: false,
       phase: "pre-flop",
       pot: 0,
+      currentPlayerPos: 1,
       winner: '',
       winningHand: ''
     }
@@ -81,7 +83,6 @@ export default class BoardContainer extends React.Component{
       newPlayerObjArr = this.state.players.map( (player, idx) => {
         return { playerName: player.username, hand: arrayOfCards.splice(0,2) }
       })
-      debugger
     })
     // this.createTableRequest(newPlayerObjArr)
     .then( () => this.setState( { playerHand: newPlayerObjArr, dealt: true } ) )
@@ -117,19 +118,23 @@ export default class BoardContainer extends React.Component{
       .then(console.log)
     }
 
+    tableUpdate(){
+      return fetch('http://localhost:3000/poker_tables/')
+    }
 
     dealFlop(){
       let flop
       this.drawCard(3)
       .then( (data) => flop = data.cards )
-      .then( () => this.setState( { board: flop, phase: "flop" } ) )
+      .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: 1 } ) )
+      .then( () => this.tableUpdate() )
     }
 
     dealToPlayers(){
       this.createPlayerHand()
     }
 
-    nextCard(handSolve){
+    nextCard(){
       debugger
       if(this.state.board.length === 0){
         this.dealFlop()
@@ -139,17 +144,20 @@ export default class BoardContainer extends React.Component{
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "turn" } ) )
+        .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: 1 } ) )
       }else if(this.state.board.length === 4){
         let anotherCard
         let board
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "river" } ) )
+        .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: 1 } ) )
       }else{
-        console.log("card", handSolve)
         this.sortAndDeclareWinner()
+        setTimeout( () => {
+          this.redeal()
+          this.dealToPlayers()
+        }, 6000)
       }
     }
 
@@ -250,14 +258,14 @@ export default class BoardContainer extends React.Component{
     }
 
     unique(handArray) {
-    var seen = {}
-    return handArray.filter( hand => {
-      if (seen[hand])
+      var seen = {}
+      return handArray.filter( hand => {
+        if (seen[hand])
         return
-      seen[hand] = true
-      return hand
-    })
-  }
+        seen[hand] = true
+        return hand
+      })
+    }
 
     findPairsOrTripsOrQuads(handArray){
 
@@ -326,6 +334,27 @@ export default class BoardContainer extends React.Component{
       debugger
     }
 
+    redeal(){
+      this.setState({
+        board: [],
+        playerHand: [],
+        phase: "pre-flop",
+        dealt: false,
+        pot: 0
+      })
+    }
+
+    handlePlayerAction(action){
+      if (this.state.currentPlayerPos === this.state.players.length){
+        this.nextCard()
+
+      }else{
+        this.setState({
+          currentPlayerPos: this.state.currentPlayerPos + 1
+        })
+      }
+    }
+
     render(){
       if(this.state.dealt && this.state.deckID){
         let showCards
@@ -341,6 +370,7 @@ export default class BoardContainer extends React.Component{
                   position={index + 1}
                   key={player.username}
                   player={player}
+                  winnings={this.state.winner === player.username ? this.state.pot : 0}
                   board={this.state.board}
                   hand={handInfo.hand}
                   nextCard={ () => this.nextCard() }
@@ -348,6 +378,8 @@ export default class BoardContainer extends React.Component{
                   bet={ (value) => this.bet(value) }
                   reveal={ (playerHandObj) => this.findWinningHand(playerHandObj)}
                   phase={this.state.phase}
+                  currentPlayerPos={this.state.currentPlayerPos}
+                  redeal={() => this.redeal()}
                 />
               )
             }
@@ -370,10 +402,12 @@ export default class BoardContainer extends React.Component{
     }else{
 
       return(
-        <div className="homepage">
+        <div className="full-board animated fadeIn">
+          <div className="center-board ">
 
-          <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
+            <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
 
+          </div>
         </div>
       )
     }
