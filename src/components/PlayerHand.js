@@ -17,10 +17,6 @@ export default class PlayerHand extends React.Component{
     this.setState({ phase: props.phase})
   }
 
-  // shouldComponentUpdate(){
-  //   this.state.phase === "flop" || this.state.phase === "turn" || this.state.phase === "pre-flop"
-  // }
-
   onFold(){
     this.setState({ folded: true })
   }
@@ -45,28 +41,61 @@ export default class PlayerHand extends React.Component{
     const sortedHand = fullHand.sort( (firstCard, secondCard) => {
       return cardRanks[secondCard[0]] - cardRanks[firstCard[0]]
     })
+
+    const reverseSortedHand = fullHand.sort( (firstCard, secondCard) => {
+      return cardRanks[firstCard[0]] - cardRanks[secondCard[0]]
+    })
+
+    const preStraightSort = reverseSortedHand.map( card => cardRanks[card.slice(0,1)] )
+    const straightSort = this.unique(preStraightSort)
+    console.log("AFTER SORTING ARRAY", straightSort)
     const flushCards = this.findFlush(sortedHand)
+    const straight = this.findStraight(straightSort)
+    console.log("AFTER FIND STRAIGHT", straight)
     const results = this.findPairsOrTripsOrQuads(sortedHand)
     const pairsArray = results[0]
     const tripsArray = results[1]
     const quadsArray = results[2]
-    debugger
-    if(quadsArray.length > 0){
-      return `7Four of a Kind ${quadsArray[0]}s`
+
+    if(flushCards.length > 0 && straight){
+      return `9STRAIGHT FLUSH`
+
+    }else if(quadsArray.length > 0){
+      return `8Four of a kind ${quadsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
     }else if(tripsArray.length >= 1 && pairsArray.length >= 1){
-      return `6Full House ${tripsArray[0]}s full of ${pairsArray[0]}s`
+      return `7Full house ${tripsArray[0]}s full of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
     }else if(flushCards.length > 0){
-      return `5${flushCards[0][0]} high flush`
+      return `6${flushCards[flushCards.length - 1][0]} high flush`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
+    }else if(straight){
+      return `5${straight}`.replace(/10/g, "Ten").replace(/11/g, "Jack").replace(/12/g, "Queen").replace(/13/g, "King").replace(/14/g, "Ace")
+
     }else if(tripsArray.length >= 1){
-      return `4Three of a Kind ${tripsArray[0]}s`
-    }else if(pairsArray.length === 2){
-      return `3Two pairs ${pairsArray[0]}s and ${pairsArray[1]}s`
-    }else if(pairsArray.length === 1){
-      return `2Pair of ${pairsArray[0]}s`
+      return `4Three of a kind ${tripsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
+    }else if(pairsArray.length >= 2){
+      return `3Two pairs ${pairsArray[pairsArray.length - 1]}s and ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
+    }else if(pairsArray.length >= 1){
+      return `2Pair of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
     }else{
-      return `1${sortedHand[0][0]} high`
+      return `1${sortedHand[sortedHand.length - 1][0]} high`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
+
     }
   }
+
+  unique(handArray) {
+  var seen = {}
+  return handArray.filter( hand => {
+    if (seen[hand])
+      return
+    seen[hand] = true
+    return hand
+  })
+}
 
   findPairsOrTripsOrQuads(handArray){
 
@@ -93,13 +122,16 @@ export default class PlayerHand extends React.Component{
     return [pairs, trips, quads]
   }
 
-  findStraight(handArray){
-    let straightCards = []
-    handArray.forEach( (card, idx) => {
-      if (card[0] + 1 === handArray[idx + 1][0]){
-        straightCards.push(card)
-      }
-    })
+  findStraight(fullHandArr) {
+    if (fullHandArr[4] - fullHandArr[0] === 4){
+      return `Straight ${fullHandArr[0]} to ${fullHandArr[4]}`
+    }else if (fullHandArr[5] - fullHandArr[1] === 4){
+      return `Straight ${fullHandArr[1]} to ${fullHandArr[5]}`
+    }else if (fullHandArr[6] - fullHandArr[2] === 4){
+      return `Straight ${fullHandArr[2]} to ${fullHandArr[6]}`
+    }else{
+      return false
+    }
   }
 
   findFlush(handArray){
@@ -126,16 +158,14 @@ export default class PlayerHand extends React.Component{
 
   handPoints(points){
     let handPoints = parseInt(points)
-    debugger
     let handPlayerObj = { player: this.props.player, points: handPoints }
     this.props.reveal(handPlayerObj)
-    debugger
   }
 
   render(){
     console.log(this.props)
 
-    if(this.state.hand && !this.state.folded){
+    if(this.state.hand && !this.state.folded && this.state.hand ){
 
       const fullHand = this.props.board.concat(this.props.hand)
 
@@ -153,7 +183,6 @@ export default class PlayerHand extends React.Component{
 
         return(
           <div className="animated rollIn">
-            <p className="board-text">{this.state.phase}</p>
             {currentHand}
 
             {handSolve ? <p className="board-text">{handSolve}</p> : null}

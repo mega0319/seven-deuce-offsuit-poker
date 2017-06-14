@@ -18,9 +18,6 @@ export default class SevenTwoOhContainer extends React.Component{
     }
   }
 
-  componentDidMount(){
-
-  }
 
   logOut(){
     sessionStorage.clear()
