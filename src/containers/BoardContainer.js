@@ -15,6 +15,7 @@ export default class BoardContainer extends React.Component{
       board: [],
       players: [],
       playerHand: [],
+      activePlayers: [],
       foldedPlayers: [],
       smallBlind: 5,
       bigBlind: 10,
@@ -127,12 +128,34 @@ export default class BoardContainer extends React.Component{
       let flop
       this.drawCard(3)
       .then( (data) => flop = data.cards )
-      .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: 1 } ) )
+      .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: this.playerPositioning() } ) )
       .then( () => this.tableUpdate() )
     }
 
     dealToPlayers(){
       this.createPlayerHand()
+    }
+
+    playerPositioning(){
+      let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
+      let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
+      let filteredActivePlayers = activePlayers.map ( playerAndIndex => playerAndIndex[1] )
+      // activePlayers = [["mega0319", 1],["anotherone", 2],["chefcurry", 5]]
+      let index = filteredActivePlayers.indexOf(this.state.currentPlayerPos)
+      console.log("active", activePlayers, "folded", this.state.foldedPlayers, "index", index)
+      // if (this.state.currentPlayerPos === this.state.activePlayers)
+      if (index === filteredActivePlayers.length - 1){
+        return filteredActivePlayers[0]
+      }else{
+        return filteredActivePlayers[index + 1]
+      }
+    }
+
+    playerPArray(){
+      let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
+      let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
+      return activePlayers.map ( playerAndIndex => playerAndIndex[1] )
+      // activePlayers = [["mega0319", 1],["anotherone", 2],["chefcurry", 5]]
     }
 
     nextCard(){
@@ -145,14 +168,14 @@ export default class BoardContainer extends React.Component{
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: 1 } ) )
+        .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: this.playerPositioning()  } ) )
       }else if(this.state.board.length === 4){
         let anotherCard
         let board
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: 1 } ) )
+        .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: this.playerPositioning() } ) )
       }else{
         this.shuffleCards()
         this.sortAndDeclareWinner()
@@ -169,13 +192,23 @@ export default class BoardContainer extends React.Component{
 
     sortAndDeclareWinner(){
       let arrayOfScoreObj = this.state.playerHand.map( playerHandObj => {
-        let board = this.state.board
-        let fullHandObj = board.concat(playerHandObj.hand)
-        let fullHandCodes = this.sortIntoCodes(fullHandObj)
-        let solved = this.solveHand(fullHandCodes)
-        let score = solved[0]
-        let hand = solved.slice(1)
-        return {playerName: playerHandObj.playerName, score: score, hand: hand  }
+        if(!this.state.foldedPlayers.includes(playerHandObj.playerName)){
+          let board = this.state.board
+          let fullHandObj = board.concat(playerHandObj.hand)
+          let fullHandCodes = this.sortIntoCodes(fullHandObj)
+          let solved = this.solveHand(fullHandCodes)
+          let score = solved[0]
+          let hand = solved.slice(1)
+          return {playerName: playerHandObj.playerName, score: score, hand: hand  }
+        }else{
+          let board = this.state.board
+          let fullHandObj = board.concat(playerHandObj.hand)
+          let fullHandCodes = this.sortIntoCodes(fullHandObj)
+          let solved = this.solveHand(fullHandCodes)
+          let score = solved[0]
+          let hand = solved.slice(1)
+          return {playerName: playerHandObj.playerName, score: 0, hand: hand  }
+        }
       })
       let winnerAndLosers = arrayOfScoreObj.sort( (a, b) => {
         return b["score"] - a["score"]
@@ -193,236 +226,254 @@ export default class BoardContainer extends React.Component{
     }
 
     fold(playerName){
-      if (this.state.players.length === this.state.currentPlayerPos){
+      console.log("FOLDING", playerName)
+      if(this.state.players.length - this.state.foldedPlayers.length === 1){
+        this.shuffleCards()
+        this.redeal()
+        this.dealToPlayers()
+      }
+      else if (this.state.players.length === this.state.currentPlayerPos){
+        this.setState({
+          foldedPlayers: this.state.foldedPlayers.concat(playerName)
+        })
         this.nextCard()
       }else{
         this.setState({
           foldedPlayers: this.state.foldedPlayers.concat(playerName),
-          currentPlayerPos: this.state.currentPlayersPos + 1
+          currentPlayerPos: this.playerPositioning()
         })
       }
     }
 
-      solveHand(fullHand){
-        //example for fullHand = ["2D", "QH", "6C", "9D", "6S", "0C"]
-        const cardRanks = {
-          "2" : 2,
-          "3" : 3,
-          "4" : 4,
-          "5" : 5,
-          "6" : 6,
-          "7" : 7,
-          "8" : 8,
-          "9" : 9,
-          "0" : 10,
-          "J" : 11,
-          "Q" : 12,
-          "K" : 13,
-          "A" : 14
-        }
-        const sortedHand = fullHand.sort( (firstCard, secondCard) => {
-          return cardRanks[secondCard[0]] - cardRanks[firstCard[0]]
-        })
-
-        const reverseSortedHand = fullHand.sort( (firstCard, secondCard) => {
-          return cardRanks[firstCard[0]] - cardRanks[secondCard[0]]
-        })
-
-        const preStraightSort = reverseSortedHand.map( card => cardRanks[card.slice(0,1)] )
-        const straightSort = this.unique(preStraightSort)
-        console.log("AFTER SORTING ARRAY", straightSort)
-        const flushCards = this.findFlush(sortedHand)
-        const straight = this.findStraight(straightSort)
-        console.log("AFTER FIND STRAIGHT", straight)
-        const results = this.findPairsOrTripsOrQuads(sortedHand)
-        const pairsArray = results[0]
-        const tripsArray = results[1]
-        const quadsArray = results[2]
-
-        if(flushCards.length > 0 && straight){
-          return `9STRAIGHT FLUSH`
-
-        }else if(quadsArray.length > 0){
-          return `8Four of a kind ${quadsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else if(tripsArray.length >= 1 && pairsArray.length >= 1){
-          return `7Full house ${tripsArray[0]}s full of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else if(flushCards.length > 0){
-          return `6${flushCards[flushCards.length - 1][0]} high flush`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else if(straight){
-          return `5${straight}`.replace(/10/g, "Ten").replace(/11/g, "Jack").replace(/12/g, "Queen").replace(/13/g, "King").replace(/14/g, "Ace")
-
-        }else if(tripsArray.length >= 1){
-          return `4Three of a kind ${tripsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else if(pairsArray.length >= 2){
-          return `3Two pairs ${pairsArray[pairsArray.length - 1]}s and ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else if(pairsArray.length >= 1){
-          return `2Pair of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }else{
-          return `1${sortedHand[sortedHand.length - 1][0]} high`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
-
-        }
+    solveHand(fullHand){
+      //example for fullHand = ["2D", "QH", "6C", "9D", "6S", "0C"]
+      const cardRanks = {
+        "2" : 2,
+        "3" : 3,
+        "4" : 4,
+        "5" : 5,
+        "6" : 6,
+        "7" : 7,
+        "8" : 8,
+        "9" : 9,
+        "0" : 10,
+        "J" : 11,
+        "Q" : 12,
+        "K" : 13,
+        "A" : 14
       }
+      const sortedHand = fullHand.sort( (firstCard, secondCard) => {
+        return cardRanks[secondCard[0]] - cardRanks[firstCard[0]]
+      })
 
-      unique(handArray) {
-        var seen = {}
-        return handArray.filter( hand => {
-          if (seen[hand])
-          return
-          seen[hand] = true
-          return hand
-        })
-      }
+      const reverseSortedHand = fullHand.sort( (firstCard, secondCard) => {
+        return cardRanks[firstCard[0]] - cardRanks[secondCard[0]]
+      })
 
-      findPairsOrTripsOrQuads(handArray){
+      const preStraightSort = reverseSortedHand.map( card => cardRanks[card.slice(0,1)] )
+      const straightSort = this.unique(preStraightSort)
+      console.log("AFTER SORTING ARRAY", straightSort)
+      const flushCards = this.findFlush(sortedHand)
+      const straight = this.findStraight(straightSort)
+      console.log("AFTER FIND STRAIGHT", straight)
+      const results = this.findPairsOrTripsOrQuads(sortedHand)
+      const pairsArray = results[0]
+      const tripsArray = results[1]
+      const quadsArray = results[2]
 
-        const object = {};
-        const pairs = [];
-        const trips = [];
-        const quads = [];
+      if(flushCards.length > 0 && straight){
+        return `9STRAIGHT FLUSH`
 
-        handArray.forEach( card => {
-          if(!object[card[0]])
-          object[card[0]] = 0;
-          object[card[0]] += 1;
-        })
+      }else if(quadsArray.length > 0){
+        return `8Four of a kind ${quadsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-        for (const cardValue in object) {
-          if(object[cardValue] === 2) {
-            pairs.push(cardValue);
-          }else if(object[cardValue] === 3){
-            trips.push(cardValue)
-          }else if(object[cardValue] === 4){
-            quads.push(cardValue)
-          }
-        }
-        return [pairs, trips, quads]
-      }
+      }else if(tripsArray.length >= 1 && pairsArray.length >= 1){
+        return `7Full house ${tripsArray[0]}s full of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-      findStraight(array) {
-        if (array[4] - array[0] === 4){
-          return `Straight ${array[0]} to ${array[4]}`
-        }else if (array[5] - array[1] === 4){
-          return `Straight ${array[1]} to ${array[5]}`
-        }else if (array[6] - array[2] === 4){
-          return `Straight ${array[2]} to ${array[6]}`
-        }else{
-          return false
-        }
-      }
+      }else if(flushCards.length > 0){
+        return `6${flushCards[flushCards.length - 1][0]} high flush`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-      findFlush(handArray){
-        const object = {}
-        const flushCards = []
-        let flushSuit = ''
+      }else if(straight){
+        return `5${straight}`.replace(/10/g, "Ten").replace(/11/g, "Jack").replace(/12/g, "Queen").replace(/13/g, "King").replace(/14/g, "Ace")
 
-        handArray.forEach( card => {
-          if (!object[card[1]])
-          object[card[1]] = 0
-          object[card[1]] += 1
-        })
-        for (const cardValue in object) {
-          if(object[cardValue] === 5) {
-            flushSuit = cardValue
-          }
-        }
-        handArray.forEach( card => {
-          if (card[1] === flushSuit)
-          flushCards.push(card)
-        })
-        return flushCards
-      }
+      }else if(tripsArray.length >= 1){
+        return `4Three of a kind ${tripsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-      handPoints(points){
-        let handPoints = parseInt(points)
-        debugger
-        let handPlayerObj = { player: this.props.player, points: handPoints }
-        this.props.reveal(handPlayerObj)
-        debugger
-      }
+      }else if(pairsArray.length >= 2){
+        return `3Two pairs ${pairsArray[pairsArray.length - 1]}s and ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-      redeal(){
-        this.setState({
-          board: [],
-          playerHand: [],
-          currentPlayerPos: 1,
-          phase: "pre-flop",
-          dealt: false,
-          pot: 0
-        })
-      }
+      }else if(pairsArray.length >= 1){
+        return `2Pair of ${pairsArray[0]}s`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-      handlePlayerAction(action){
-        if (this.state.currentPlayerPos === this.state.players.length){
-          this.nextCard()
-        }else{
-          this.setState({
-            currentPlayerPos: this.state.currentPlayerPos + 1
-          })
-        }
-      }
-
-      render(){
-        if(this.state.dealt && this.state.deckID){
-          let showCards
-          if(this.state.board.length > 0){
-            showCards = this.state.board.map( (el,index) => <img key={index} className="card animated slideInDown" src={el.image} alt="boohoo" width="100" height="120"/> )
-          }
-          let hands = []
-          this.state.playerHand.forEach( (handInfo, idx) => {
-            this.state.players.map( (player, index) => {
-              if (handInfo.playerName === player.username){
-                hands.push(
-                  <Player
-                    position={index + 1}
-                    key={player.username}
-                    player={player}
-                    winnings={this.state.winner === player.username ? this.state.pot : 0}
-                    handlePlayerAction={() => this.handlePlayerAction()}
-                    board={this.state.board}
-                    hand={handInfo.hand}
-                    nextCard={ () => this.nextCard() }
-                    fold={ () => this.fold() }
-                    bet={ (value) => this.bet(value) }
-                    reveal={ (playerHandObj) => this.findWinningHand(playerHandObj)}
-                    phase={this.state.phase}
-                    currentPlayerPos={this.state.currentPlayerPos}
-                    redeal={() => this.redeal()}
-                  />
-                )
-              }
-            }
-          )
-
-        })
-        return(
-          <div className="full-board animated fadeIn">
-            <div className="center-board ">
-              <p className="board-text">{this.state.phase}</p>
-              {showCards ? showCards : null}
-              {this.state.phase === "round-end" ? <h4 className="board-text"> {this.state.winner} wins with {this.state.winningHand} </h4> : null}
-              <h4 className="board-text pot">Pot: {this.state.pot}</h4>
-            </div>
-
-            {hands}
-          </div>
-        )
       }else{
+        return `1${sortedHand[sortedHand.length - 1][0]} high`.replace(/0/g , "Ten").replace(/J/g, "Jack").replace(/Q/g, "Queen").replace(/K/g, "King").replace(/A/g, "Ace")
 
-        return(
-          <div className="full-board animated fadeIn">
-            <div className="center-board ">
-
-              <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
-
-            </div>
-          </div>
-        )
       }
+    }
+
+    unique(handArray) {
+      var seen = {}
+      return handArray.filter( hand => {
+        if (seen[hand])
+        return
+        seen[hand] = true
+        return hand
+      })
+    }
+
+    findPairsOrTripsOrQuads(handArray){
+
+      const object = {};
+      const pairs = [];
+      const trips = [];
+      const quads = [];
+
+      handArray.forEach( card => {
+        if(!object[card[0]])
+        object[card[0]] = 0;
+        object[card[0]] += 1;
+      })
+
+      for (const cardValue in object) {
+        if(object[cardValue] === 2) {
+          pairs.push(cardValue);
+        }else if(object[cardValue] === 3){
+          trips.push(cardValue)
+        }else if(object[cardValue] === 4){
+          quads.push(cardValue)
+        }
+      }
+      return [pairs, trips, quads]
+    }
+
+    findStraight(array) {
+      if (array[4] - array[0] === 4){
+        return `Straight ${array[0]} to ${array[4]}`
+      }else if (array[5] - array[1] === 4){
+        return `Straight ${array[1]} to ${array[5]}`
+      }else if (array[6] - array[2] === 4){
+        return `Straight ${array[2]} to ${array[6]}`
+      }else{
+        return false
+      }
+    }
+
+    findFlush(handArray){
+      const object = {}
+      const flushCards = []
+      let flushSuit = ''
+
+      handArray.forEach( card => {
+        if (!object[card[1]])
+        object[card[1]] = 0
+        object[card[1]] += 1
+      })
+      for (const cardValue in object) {
+        if(object[cardValue] === 5) {
+          flushSuit = cardValue
+        }
+      }
+      handArray.forEach( card => {
+        if (card[1] === flushSuit)
+        flushCards.push(card)
+      })
+      return flushCards
+    }
+
+    handPoints(points){
+      let handPoints = parseInt(points)
+      debugger
+      let handPlayerObj = { player: this.props.player, points: handPoints }
+      this.props.reveal(handPlayerObj)
+      debugger
+    }
+
+    redeal(){
+      let playerNames = this.state.players.map( player => player.username)
+      this.setState({
+        board: [],
+        playerHand: [],
+        activePlayers: playerNames,
+        currentPlayerPos: 1,
+        phase: "pre-flop",
+        dealt: false,
+        foldedPlayers: [],
+        pot: 0
+      })
+    }
+
+    handlePlayerAction(action){
+      let array = this.playerPArray()
+      let finalPosition = array[array.length - 1]
+
+      if (this.state.currentPlayerPos === finalPosition ){
+        this.nextCard()
+      }else{
+        this.setState({
+          currentPlayerPos: this.playerPositioning()
+        })
+      }
+    }
+
+    render(){
+      console.log(this.props.foldedPlayers)
+      if(this.state.dealt && this.state.deckID){
+        let showCards
+        if(this.state.board.length > 0){
+          showCards = this.state.board.map( (el,index) => <img key={index} className="card animated slideInDown" src={el.image} alt="boohoo" width="100" height="120"/> )
+        }
+        let hands = []
+        this.state.playerHand.forEach( (handInfo, idx) => {
+          this.state.players.map( (player, index) => {
+            if (handInfo.playerName === player.username){
+              hands.push(
+                <Player
+                  position={index + 1}
+                  key={player.username}
+                  player={player}
+                  winnings={this.state.winner === player.username ? this.state.pot : 0}
+                  handlePlayerAction={() => this.handlePlayerAction()}
+                  board={this.state.board}
+                  hand={handInfo.hand}
+                  nextCard={ () => this.nextCard() }
+                  fold={ (playerName) => this.fold(playerName) }
+                  bet={ (value) => this.bet(value) }
+                  reveal={ (playerHandObj) => this.findWinningHand(playerHandObj)}
+                  phase={this.state.phase}
+                  currentPlayerPos={this.state.currentPlayerPos}
+                  redeal={() => this.redeal()}
+                  foldedPlayers={this.state.foldedPlayers}
+                  folded={this.state.foldedPlayers.includes(player.username)}
+                />
+              )
+            }
+          }
+        )
+
+      })
+      return(
+        <div className="full-board animated fadeIn">
+          <div className="center-board ">
+            <p className="board-text">{this.state.phase}</p>
+            {showCards ? showCards : null}
+            {this.state.phase === "round-end" ? <h4 className="board-text"> {this.state.winner} wins with {this.state.winningHand} </h4> : null}
+            <h4 className="board-text pot">Pot: {this.state.pot}</h4>
+          </div>
+
+          {hands}
+        </div>
+      )
+    }else{
+
+      return(
+        <div className="full-board animated fadeIn">
+          <div className="center-board ">
+
+            <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
+
+          </div>
+        </div>
+      )
     }
   }
+}

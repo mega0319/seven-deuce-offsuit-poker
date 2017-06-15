@@ -8,13 +8,13 @@ export default class PlayerHand extends React.Component{
 
     this.state = {
       hand: props.hand,
-      folded: false,
+      folded: props.folded,
       phase: props.phase
     }
   }
 
   componentWillReceiveProps(props){
-    this.setState({ phase: props.phase})
+    this.setState({ phase: props.phase, folded: props.folded })
   }
 
   onFold(){
@@ -48,10 +48,8 @@ export default class PlayerHand extends React.Component{
 
     const preStraightSort = reverseSortedHand.map( card => cardRanks[card.slice(0,1)] )
     const straightSort = this.unique(preStraightSort)
-    console.log("AFTER SORTING ARRAY", straightSort)
     const flushCards = this.findFlush(sortedHand)
     const straight = this.findStraight(straightSort)
-    console.log("AFTER FIND STRAIGHT", straight)
     const results = this.findPairsOrTripsOrQuads(sortedHand)
     const pairsArray = results[0]
     const tripsArray = results[1]
@@ -166,7 +164,7 @@ export default class PlayerHand extends React.Component{
 
 
   render(){
-    console.log(this.props)
+    console.log("props", this.props)
 
     if(this.state.hand && !this.state.folded && this.state.hand ){
 
@@ -183,7 +181,7 @@ export default class PlayerHand extends React.Component{
 
 
       if(this.props.currentPlayerPos === this.props.position){
-
+        console.log(this.props)
         return(
           <div className="animated rollIn">
             {currentHand}
@@ -194,7 +192,7 @@ export default class PlayerHand extends React.Component{
 
             <button className="btn btn-default" onClick={() => this.props.handlePlayerAction() }> Check </button>
 
-            <button className="btn btn-default" onClick={() => this.onFold() }> Fold </button>
+            <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
           </div>
         )
       }else{
@@ -209,11 +207,10 @@ export default class PlayerHand extends React.Component{
         )
       }
     }else{
-      console.log(this.props.board.map( card => card.code) )
       return(
         <div>
 
-          <p className="board-text">You are currently sitting out</p>
+          <p className="board-text"> FOLDED </p>
 
         </div>
       )

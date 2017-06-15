@@ -31,12 +31,14 @@ export default class Player extends React.Component{
           board={this.props.board}
           hand={this.props.hand}
           nextCard={ () => this.props.nextCard() }
-          fold={ () => this.props.fold() }
+          fold={ (playerName) => this.props.fold(playerName) }
           bet={ (value) => this.props.bet(value) }
           updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
           reveal= { () => this.props.reveal() }
           phase={this.props.phase}
           redeal={() => this.props.redeal()}
+          foldedPlayers={this.props.foldedPlayers}
+          folded={this.props.folded}
         />
       </div>
     )
