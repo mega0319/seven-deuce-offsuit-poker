@@ -1,7 +1,7 @@
 import React from 'react'
 import Player from '../components/Player'
 import styles from '../css/Board.css'
-
+import MessageBox from '../components/MessageBox'
 
 export default class BoardContainer extends React.Component{
   constructor(props){
@@ -17,21 +17,31 @@ export default class BoardContainer extends React.Component{
       playerHand: [],
       activePlayers: [],
       foldedPlayers: [],
-      smallBlind: 5,
-      bigBlind: 10,
+      smallBlind: 100,
+      bigBlind: 200,
       dealerButtonPosition: 1,
       dealt: false,
       phase: "pre-flop",
+      currentBet: 0,
       pot: 0,
       currentPlayerPos: 1,
       winner: '',
-      winningHand: ''
+      winningHand: '',
+      message: ''
     }
   }
+
+
 
   componentDidMount(){
     this.getCards()
     this.getUsers()
+  //   console.log()
+  //   this.props.cable.pokertablechannel = this.props.cable.cable.subscriptions.create('PokerTableChannel',
+  // {
+  //   received: (data) => console.log(data)
+  // })
+    this.createTableRequest()
   }
 
   getUsers(){
@@ -86,12 +96,29 @@ export default class BoardContainer extends React.Component{
         return { playerName: player.username, hand: arrayOfCards.splice(0,2) }
       })
     })
-    // this.createTableRequest(newPlayerObjArr)
     .then( () => this.setState( { playerHand: newPlayerObjArr, dealt: true } ) )
   }
 
   createTableRequest(newPlayerObjArr){
     let playerIDs = this.state.players.map( player => player.id )
+
+    // this.props.cable.pokertablechannel.send({poker_table:
+    //       {
+    //         name: this.state.tableName,
+    //         creator_id: sessionStorage.getItem("user_id"),
+    //         board_cards: '',
+    //         turns: 0,
+    //         pot: 0,
+    //         dealer_button_position: 1,
+    //         small_blind: 5,
+    //         big_blind: 10,
+    //         current_turn_position: 1,
+    //       },user_updates:
+    //       {
+    //         user_id: playerIDs,
+    //         hands: newPlayerObjArr
+    //       }
+    //     })
     return fetch('http://localhost:3000/poker_tables', {
       headers: {
         'Accept': 'application/json',
@@ -103,12 +130,12 @@ export default class BoardContainer extends React.Component{
           {
             name: this.state.tableName,
             creator_id: sessionStorage.getItem("user_id"),
-            board_cards: '',
+            board_cards: this.state.board,
             turns: 0,
             pot: 0,
             dealer_button_position: 1,
-            small_blind: 5,
-            big_blind: 10,
+            small_blind: 100,
+            big_blind: 200,
             current_turn_position: 1,
           },user_updates:
           {
@@ -117,7 +144,6 @@ export default class BoardContainer extends React.Component{
           }
         })
       }).then(res => res.json() )
-      .then(console.log)
     }
 
     tableUpdate(){
@@ -128,7 +154,7 @@ export default class BoardContainer extends React.Component{
       let flop
       this.drawCard(3)
       .then( (data) => flop = data.cards )
-      .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: this.playerPositioning() } ) )
+      .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: this.playerPositioning(), currentBet: 0 } ) )
       .then( () => this.tableUpdate() )
     }
 
@@ -140,10 +166,7 @@ export default class BoardContainer extends React.Component{
       let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
       let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
       let filteredActivePlayers = activePlayers.map ( playerAndIndex => playerAndIndex[1] )
-      // activePlayers = [["mega0319", 1],["anotherone", 2],["chefcurry", 5]]
       let index = filteredActivePlayers.indexOf(this.state.currentPlayerPos)
-      console.log("active", activePlayers, "folded", this.state.foldedPlayers, "index", index)
-      // if (this.state.currentPlayerPos === this.state.activePlayers)
       if (index === filteredActivePlayers.length - 1){
         return filteredActivePlayers[0]
       }else{
@@ -155,7 +178,6 @@ export default class BoardContainer extends React.Component{
       let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
       let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
       return activePlayers.map ( playerAndIndex => playerAndIndex[1] )
-      // activePlayers = [["mega0319", 1],["anotherone", 2],["chefcurry", 5]]
     }
 
     nextCard(){
@@ -168,21 +190,16 @@ export default class BoardContainer extends React.Component{
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: this.playerPositioning()  } ) )
+        .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: this.playerPositioning(), currentBet: 0  } ) )
       }else if(this.state.board.length === 4){
         let anotherCard
         let board
         this.drawCard(1)
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
-        .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: this.playerPositioning() } ) )
+        .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: this.playerPositioning(), currentBet: 0 } ) )
       }else{
-        this.shuffleCards()
         this.sortAndDeclareWinner()
-        setTimeout( () => {
-          this.redeal()
-          this.dealToPlayers()
-        }, 6000)
       }
     }
 
@@ -190,7 +207,36 @@ export default class BoardContainer extends React.Component{
       return arrayOfCardObj.map( cardObj => cardObj.code )
     }
 
+
+    winnerWinnerChickenDinner(winner){
+      this.getUsers()
+      let selectPlayer = this.state.players.filter( player => winner === player.username)
+      console.log("winner", winner)
+      let playerID = selectPlayer[0].id
+      let playerChips
+
+      fetch(`http://localhost:3000/users/${playerID}`)
+      .then( res => res.json() )
+      .then( data => playerChips = data.play_chips)
+      .then( () => {
+      let chips = this.state.pot + playerChips
+
+      return fetch(`http://localhost:3000/users/${playerID}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: "PATCH",
+          body: JSON.stringify( {user: {play_chips: chips} } )
+        })
+      }
+      )
+
+    }
+
     sortAndDeclareWinner(){
+      this.shuffleCards()
+
       let arrayOfScoreObj = this.state.playerHand.map( playerHandObj => {
         if(!this.state.foldedPlayers.includes(playerHandObj.playerName)){
           let board = this.state.board
@@ -216,21 +262,42 @@ export default class BoardContainer extends React.Component{
       this.setState({
         winner: winnerAndLosers[0].playerName,
         winningHand: winnerAndLosers[0].hand,
-        phase: "round-end"
+        phase: "round-end",
+        currentBet: 0
       })
+      this.winnerWinnerChickenDinner(winnerAndLosers[0].playerName)
+      setTimeout( () => {
+        this.redeal()
+        this.dealToPlayers()
+      }, 6000)
+
     }
+
 
     bet(value){
       const updatePot = parseInt(this.state.pot) + parseInt(value)
-      this.setState({ pot: updatePot, currentPlayerPos: this.state.currentPlayerPos + 1 })
+      this.setState({ pot: updatePot, currentPlayerPos: this.playerPositioning(), currentBet: parseInt(value) })
+    }
+
+    call(){
+      let array = this.playerPArray()
+      let finalPosition = array[array.length - 1]
+      if (this.state.currentPlayerPos === finalPosition){
+        this.setState({ pot: this.state.pot + this.state.currentBet })
+        this.nextCard()
+      }else{
+        this.setState({ pot: this.state.pot + this.state.currentBet, currentPlayerPos: this.playerPositioning() })
+      }
     }
 
     fold(playerName){
-      console.log("FOLDING", playerName)
-      if(this.state.players.length - this.state.foldedPlayers.length === 1){
-        this.shuffleCards()
-        this.redeal()
-        this.dealToPlayers()
+      let array = this.playerPArray()
+      let finalPosition = array[array.length - 1]
+      if(this.state.foldedPlayers.length  === this.state.players.length - 2){
+        this.setState({
+          foldedPlayers: this.state.foldedPlayers.concat(playerName)
+        })
+        this.sortAndDeclareWinner()
       }
       else if (this.state.players.length === this.state.currentPlayerPos){
         this.setState({
@@ -272,10 +339,8 @@ export default class BoardContainer extends React.Component{
 
       const preStraightSort = reverseSortedHand.map( card => cardRanks[card.slice(0,1)] )
       const straightSort = this.unique(preStraightSort)
-      console.log("AFTER SORTING ARRAY", straightSort)
       const flushCards = this.findFlush(sortedHand)
       const straight = this.findStraight(straightSort)
-      console.log("AFTER FIND STRAIGHT", straight)
       const results = this.findPairsOrTripsOrQuads(sortedHand)
       const pairsArray = results[0]
       const tripsArray = results[1]
@@ -416,7 +481,9 @@ export default class BoardContainer extends React.Component{
     }
 
     render(){
-      console.log(this.props.foldedPlayers)
+
+      console.log("cable", this.props.cable)
+
       if(this.state.dealt && this.state.deckID){
         let showCards
         if(this.state.board.length > 0){
@@ -431,7 +498,7 @@ export default class BoardContainer extends React.Component{
                   position={index + 1}
                   key={player.username}
                   player={player}
-                  winnings={this.state.winner === player.username ? this.state.pot : 0}
+                  // winnings={this.state.winner === player.username ? this.state.pot : 0}
                   handlePlayerAction={() => this.handlePlayerAction()}
                   board={this.state.board}
                   hand={handInfo.hand}
@@ -444,6 +511,8 @@ export default class BoardContainer extends React.Component{
                   redeal={() => this.redeal()}
                   foldedPlayers={this.state.foldedPlayers}
                   folded={this.state.foldedPlayers.includes(player.username)}
+                  currentBet={this.state.currentBet}
+                  call={() => this.call() }
                 />
               )
             }
@@ -461,6 +530,7 @@ export default class BoardContainer extends React.Component{
           </div>
 
           {hands}
+          <MessageBox />
         </div>
       )
     }else{
@@ -472,6 +542,7 @@ export default class BoardContainer extends React.Component{
             <button className="btn-lg btn-default" onClick={() => this.dealToPlayers() }>Deal!</button>
 
           </div>
+          <MessageBox />
         </div>
       )
     }

@@ -2,6 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import Game from '../components/Game'
+import BoardContainer from '../containers/BoardContainer'
 
 export default class SevenTwoOhContainer extends React.Component{
   constructor(){
@@ -29,6 +30,7 @@ export default class SevenTwoOhContainer extends React.Component{
       <div className="homepage">
         <NavBar logOut={() => this.logOut() }/>
         <Route exact path="/home/newgame" render={ () => <Game /> } />
+        <Route exact path="/home/pokertables/:id" render={() => <BoardContainer cable={this.props.cable}/>} />
       </div>
     )
   }

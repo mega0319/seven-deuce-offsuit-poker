@@ -9,12 +9,13 @@ export default class PlayerHand extends React.Component{
     this.state = {
       hand: props.hand,
       folded: props.folded,
-      phase: props.phase
+      phase: props.phase,
+      currentBet: props.currentBet
     }
   }
 
   componentWillReceiveProps(props){
-    this.setState({ phase: props.phase, folded: props.folded })
+    this.setState({ phase: props.phase, folded: props.folded , currentBet: props.currentBet})
   }
 
   onFold(){
@@ -86,14 +87,14 @@ export default class PlayerHand extends React.Component{
   }
 
   unique(handArray) {
-  var seen = {}
-  return handArray.filter( hand => {
-    if (seen[hand])
+    var seen = {}
+    return handArray.filter( hand => {
+      if (seen[hand])
       return
-    seen[hand] = true
-    return hand
-  })
-}
+      seen[hand] = true
+      return hand
+    })
+  }
 
   findPairsOrTripsOrQuads(handArray){
 
@@ -164,7 +165,6 @@ export default class PlayerHand extends React.Component{
 
 
   render(){
-    console.log("props", this.props)
 
     if(this.state.hand && !this.state.folded && this.state.hand ){
 
@@ -181,20 +181,33 @@ export default class PlayerHand extends React.Component{
 
 
       if(this.props.currentPlayerPos === this.props.position){
-        console.log(this.props)
-        return(
-          <div className="animated rollIn">
-            {currentHand}
+        if(this.state.currentBet > 0){
+          return(
+            <div className="">
+              {currentHand}
 
-            {handSolve ? <p className="board-text">{handSolve}</p> : null}
+              {handSolve ? <p className="board-text">{handSolve}</p> : null}
 
-            <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips}/>
+              <button className="btn btn-default" onClick={() => this.props.call()}> Call </button>
 
-            <button className="btn btn-default" onClick={() => this.props.handlePlayerAction() }> Check </button>
+              <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+            </div>
+          )
+        }else{
+          return(
+            <div className="">
+              {currentHand}
 
-            <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
-          </div>
-        )
+              {handSolve ? <p className="board-text">{handSolve}</p> : null}
+
+              <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
+
+              <button className="btn btn-default" onClick={() => this.props.handlePlayerAction() }> Check </button>
+
+              <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+            </div>
+          )
+        }
       }else{
         return(
           <div className="">
