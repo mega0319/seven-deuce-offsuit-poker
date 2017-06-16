@@ -28,7 +28,7 @@
 
 .position-1{
   position: absolute;
-  left: 32%;
+  left: 20%;
   top: 68%;
   width: 40%;
   text-align: center;
@@ -38,7 +38,7 @@
 
 .position-2{
   position: absolute;
-  left: 55%;
+  left: 45%;
   top: 68%;
   width: 40%;
   text-align: center;
@@ -47,8 +47,8 @@
 
 .position-3{
   position: absolute;
-  left: 70%;
-  top: 45%;
+  left: 65%;
+  top: 50%;
   width: 40%;
   text-align: center;
   font-size: 18px;
@@ -56,7 +56,7 @@
 
 .position-4{
   position: absolute;
-  left: 70%;
+  left: 65%;
   top: 0%;
   width: 40%;
   text-align: center;
@@ -88,15 +88,33 @@
 
 .player-stats {
   color: #FFF;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .message-box{
+  overflow: auto;
   background-color: white;
-  border: 2px solid black;
+  border: 3px solid black;
   position: absolute;
-  left: -5%;
-  top: 100%;
-  width: 35%;
-  height: 25%
+  left: 0%;
+  top: 98%;
+  width: 29%;
+  height: 20%
+}
+
+.message{
+  position:absolute;
+  /*border: 2px solid black;*/
+  top: 118%;
+  width: 130%;
+  left: 0%;
+}
+
+.message-text{
+  margin-left: 0;
+}
+
+.message-ul{
+  padding: 0;
+  margin: 0;
 }

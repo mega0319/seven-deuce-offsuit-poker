@@ -47,7 +47,7 @@ export default class Player extends React.Component{
 
     return(
       <div className={`row position-${this.props.position}`}>
-        <p className='player-stats'> {this.props.position} </p>
+        {/* <p className='player-stats'> {this.props.position} </p> */}
         <p className='player-stats'> {this.props.player.username}</p>
         <p className='player-stats'> chips: {this.state.playerChips} </p>
 
@@ -55,7 +55,7 @@ export default class Player extends React.Component{
           position={this.props.position}
           currentPlayerPos={this.props.currentPlayerPos}
           handlePlayerAction={() => this.props.handlePlayerAction()}
-          key={this.props.player.username}
+          key={this.props.player.id}
           player={this.props.player.username}
           board={this.props.board}
           hand={this.props.hand}

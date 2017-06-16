@@ -172,7 +172,7 @@ export default class PlayerHand extends React.Component{
 
       const codes = fullHand.map( card => card.code )
 
-      let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card animated rollIn" src={el.image} alt="boohoo" width="100" height="120"/> )
+      let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card animated rollIn" src={el.image} alt="boohoo" width="80" height="100"/> )
 
       let preSolve = this.solveHand(codes)
 

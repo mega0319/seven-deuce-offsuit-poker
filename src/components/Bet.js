@@ -21,7 +21,7 @@ export default class Bet extends Component{
 
   render(){
     return(
-      <form className="board-inputs form-group animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
+      <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
 
         <input  onChange={(e) => this.handleBetChange(e)} min="0" max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
 
