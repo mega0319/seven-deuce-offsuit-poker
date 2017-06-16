@@ -1,12 +1,12 @@
 import React from 'react'
 import BoardContainer from '../containers/BoardContainer'
 
-export default function Game(){
+export default function Game(props){
 
   return(
     <div className="game-container">
 
-      <BoardContainer />
+      <BoardContainer cableApp={props.cableApp}/>
 
     </div>
   )

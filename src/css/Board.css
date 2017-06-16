@@ -111,10 +111,18 @@
 }
 
 .message-text{
-  margin-left: 0;
+  margin-left: 1px;
 }
 
 .message-ul{
-  padding: 0;
-  margin: 0;
+  padding: 1px;
+  margin: 1px;
+}
+
+.find-games{
+  background: #800020;
+}
+
+.logout-but{
+  display: inline-block;
 }

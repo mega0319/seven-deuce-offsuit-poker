@@ -1,5 +1,5 @@
 import React from 'react'
-
+import NavBar from './NavBar'
 
 export default class AllGames extends React.Component{
   constructor(){
@@ -22,7 +22,8 @@ export default class AllGames extends React.Component{
 
     return(
 
-      <div>
+      <div className="find-games">
+        <NavBar />
         <ul>
           {allGames}
         </ul>

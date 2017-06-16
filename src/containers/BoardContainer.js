@@ -183,6 +183,10 @@ export default class BoardContainer extends React.Component{
           }
         })
       }).then(res => res.json() )
+      // .then(data => {
+      //   this.setState({ tableID: data.id}, () => browserhistory.push(`/home/pokertables/${data.id}`))
+      //
+      // })
       .then(data => this.setState({ tableID: data.id}))
     }
 
@@ -232,6 +236,7 @@ export default class BoardContainer extends React.Component{
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
         .then( () => this.setState( { board: board, phase: "turn", currentPlayerPos: this.playerPositioning(), currentBet: 0  } ) )
+        .then( () => this.updateTable() )
       }else if(this.state.board.length === 4){
         let anotherCard
         let board
@@ -239,6 +244,7 @@ export default class BoardContainer extends React.Component{
         .then( (data) => anotherCard = data.cards[0])
         .then( () => board = this.state.board.concat( anotherCard ) )
         .then( () => this.setState( { board: board, phase: "river", currentPlayerPos: this.playerPositioning(), currentBet: 0 } ) )
+        .then( () => this.updateTable() )
       }else{
         this.sortAndDeclareWinner()
       }
@@ -307,6 +313,7 @@ export default class BoardContainer extends React.Component{
       phase: "round-end",
       currentBet: 0
     })
+    this.updateTable()
     this.winnerWinnerChickenDinner(winnerAndLosers[0].playerName)
     setTimeout( () => {
       this.redeal()
@@ -319,6 +326,7 @@ export default class BoardContainer extends React.Component{
   bet(value){
     const updatePot = parseInt(this.state.pot) + parseInt(value)
     this.setState({ pot: updatePot, currentPlayerPos: this.playerPositioning(), currentBet: parseInt(value) })
+    this.updateTable()
   }
 
   call(){
@@ -329,6 +337,7 @@ export default class BoardContainer extends React.Component{
       this.nextCard()
     }else{
       this.setState({ pot: this.state.pot + this.state.currentBet, currentPlayerPos: this.playerPositioning() })
+      this.updateTable()
     }
   }
 
@@ -350,7 +359,9 @@ export default class BoardContainer extends React.Component{
       this.setState({
         foldedPlayers: this.state.foldedPlayers.concat(playerName),
         currentPlayerPos: this.playerPositioning()
+
       })
+      this.updateTable()
     }
   }
 
@@ -509,6 +520,7 @@ export default class BoardContainer extends React.Component{
       winningHand: '',
       pot: 0
     })
+    this.updateTable()
   }
 
   handlePlayerAction(action){
@@ -521,6 +533,7 @@ export default class BoardContainer extends React.Component{
       this.setState({
         currentPlayerPos: this.playerPositioning()
       })
+      this.updateTable()
     }
   }
 
@@ -574,7 +587,7 @@ export default class BoardContainer extends React.Component{
         </div>
 
         {hands}
-        <MessageBox tableID={this.state.tableID}/>
+        <MessageBox cableApp={this.props.cableApp} tableID={this.state.tableID}/>
       </div>
     )
   }else{

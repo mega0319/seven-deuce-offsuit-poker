@@ -9,7 +9,6 @@ export default class MessageBox extends React.Component{
       input: '',
       messages: [],
       players:[]
-
     }
   }
 
@@ -18,10 +17,23 @@ export default class MessageBox extends React.Component{
   // }
 
   componentDidMount(){
-    return fetch('http://localhost:3000/messages')
+    return fetch(`http://localhost:3000/messages?pokertable_id=${this.props.tableID}`)
     .then( res => res.json() )
-    .then( data => this.setState({ messages: data}))
+    .then( data => {
+      const messages = data || []
+      this.setState({ messages: messages}, () => {
+        this.props.cableApp.messageschannel = this.props.cableApp.cable.subscriptions.create('MessagesChannel',
+        {
+
+          received: (cableData) => {
+            console.log("CNSOLE LOG:", cableData)
+            this.setState( { messages: [...this.state.messages, cableData] }) }
+
+        })
+      })
+    })
     // this.props.getUsers()
+
   }
 
   componentDidUpdate(){
@@ -30,25 +42,35 @@ export default class MessageBox extends React.Component{
   }
 
   handleMessageCreate(){
-    return fetch('http://localhost:3000/messages',{
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body: JSON.stringify(
-        {message:
-          {
-            user_id: sessionStorage.getItem("user_id"),
-            poker_table_id: this.props.tableID,
-            content: this.state.input
-          }
+    // console.log("PROPS IN MSGS", this.props)
+    this.props.cableApp.messageschannel.send(
+      {message:
+        {
+          user_id: sessionStorage.getItem("user_id"),
+          poker_table_id: this.props.tableID,
+          content: this.state.input
         }
-      )
-    })
-    .then(res => res.json() )
-    // .then(console.log)
-    .then( data => this.setState( { messages: data, input: ''} ))
+      }
+    )
+    // return fetch('http://localhost:3000/messages',{
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   method: "POST",
+    //   body: JSON.stringify(
+    //     {message:
+    //       {
+    //         user_id: sessionStorage.getItem("user_id"),
+    //         poker_table_id: this.props.tableID,
+    //         content: this.state.input
+    //       }
+    //     }
+    //   )
+    // })
+    // .then(res => res.json() )
+    // // .then(console.log)
+    // .then( data => this.setState( { messages: data, input: ''} ))
 
   }
 
@@ -63,9 +85,14 @@ export default class MessageBox extends React.Component{
   }
 
   render(){
-    console.log('MessgaeBox render, props:', this.props)
-    let allMessages = this.state.messages.map( message => <MessageItem key={message.id} player={message.user.username} content={message.content} /> )
+    console.log('STATE:', this.state)
+    let allMessages;
 
+    if (this.state.messages.length){
+      allMessages = this.state.messages.map( message => <MessageItem key={message.id} player={message.user.username} content={message.content} /> )
+    }else{
+      allMessages = <p>Type Message Now</p>
+    }
     console.log(allMessages)
     return(
       <div>

@@ -16,7 +16,7 @@ export default class App extends React.Component{
       <div>
         <Router>
           <Switch>
-            <Route path="/home" component={SevenTwoOhContainer}/>
+            <Route path="/home" render={() => <SevenTwoOhContainer cableApp={this.props.cableApp}/>}/>
             <Route exact path="/login" component={LoginForm}/>
             <Route exact path="/create" component={CreateUser} />
             <Route exact path="/games" component={AllGames} />

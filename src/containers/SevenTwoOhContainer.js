@@ -29,8 +29,8 @@ export default class SevenTwoOhContainer extends React.Component{
     return(
       <div className="homepage">
         <NavBar logOut={() => this.logOut() }/>
-        <Route exact path="/home/newgame" render={ () => <Game /> } />
-        <Route exact path="/home/pokertables/:id" render={() => <BoardContainer cable={this.props.cable}/>} />
+        <Route exact path="/home/newgame" render={ () => <Game cableApp={this.props.cableApp}/> } />
+        <Route exact path="/home/pokertables/:id" render={() => <BoardContainer cableApp={this.props.cableApp}/>} />
       </div>
     )
   }
