@@ -29,7 +29,7 @@
 .position-1{
   position: absolute;
   left: 20%;
-  top: 68%;
+  top: 65%;
   width: 40%;
   text-align: center;
   font-size: 18px;
@@ -39,7 +39,7 @@
 .position-2{
   position: absolute;
   left: 45%;
-  top: 68%;
+  top: 65%;
   width: 40%;
   text-align: center;
   font-size: 18px;
@@ -97,17 +97,21 @@
   border: 3px solid black;
   position: absolute;
   left: 0%;
-  top: 98%;
-  width: 29%;
+  top: 0%;
+  width: 28%;
   height: 20%
 }
 
 .message{
   position:absolute;
   /*border: 2px solid black;*/
-  top: 118%;
-  width: 130%;
+
+  /*top: 118%;
+  width: 100%;
+  left: 20%;*/
   left: 0%;
+  width:50%;
+  top: 20%;
 }
 
 .message-text{
@@ -121,4 +125,25 @@
 
 .find-games{
   background: #800020;
+}
+
+.player-now{
+  position: relative;
+  border: 3px solid red;
+  width: 100px;
+  left: 40%;
+  /*width: 40%;*/
+  /*left: 50%;*/
+}
+
+.message-send{
+  visibility:hidden;
+}
+
+.message-container{
+  background-color: #800020;
+}
+
+.board-inputs{
+  margin: 5px;
 }

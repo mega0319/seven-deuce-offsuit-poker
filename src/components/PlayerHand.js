@@ -180,7 +180,7 @@ export default class PlayerHand extends React.Component{
 
 
 
-      if(this.props.currentPlayerPos === this.props.position){
+      if(this.props.currentPlayerPos === this.props.position && this.props.player === sessionStorage.getItem("User")){
         if(this.state.currentBet > 0){
           return(
             <div className="">
@@ -188,9 +188,9 @@ export default class PlayerHand extends React.Component{
 
               {handSolve ? <p className="board-text">{handSolve}</p> : null}
 
-              <button className="btn btn-default" onClick={() => this.props.call()}> Call </button>
+              <button className="btn btn-success" onClick={() => this.props.call()}> Call </button>
 
-              <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+              <button className="btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
             </div>
           )
         }else{
@@ -202,15 +202,16 @@ export default class PlayerHand extends React.Component{
 
               <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
 
-              <button className="btn btn-default" onClick={() => this.props.handlePlayerAction() }> Check </button>
+              <button className="btn btn-success" onClick={() => this.props.handlePlayerAction() }> Check </button>
 
-              <button className="btn btn-default" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+              <button className="btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
             </div>
           )
         }
-      }else{
+      }else if (this.props.player === sessionStorage.getItem("User")){
         return(
           <div className="">
+
 
             {currentHand}
 
@@ -218,6 +219,15 @@ export default class PlayerHand extends React.Component{
 
           </div>
         )
+      } else{
+        return(
+        <div>
+
+          <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
+          <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
+
+        </div>
+      )
       }
     }else{
       return(

@@ -27,19 +27,32 @@ export default class BoardContainer extends React.Component{
       currentPlayerPos: 1,
       winner: '',
       winningHand: '',
-      message: ''
+      message: '',
+      playersLoggedIn: []
     }
   }
 
-
+  // componentWillReceiveProps(newProps){
+  //   if (newProps.match){
+  //     this.setState({ tableID: parseInt(newProps.match.url.slice(-3)) })
+  //   }
+  // }
 
   componentDidMount(){
     if (this.props.started){
+      // this.setState({ tableID: this.props.match.url.slice(-3) })
+      console.log("ALREADY STARTED", this.props.match.url.slice(-3))
+      this.updatePlayerTable()
+      .then( console.log )
+
+      // this.getUsers()
+      // .then( () =>  {
       this.props.cableApp.pokertablechannel =
       this.props.cableApp.cable.subscriptions.create('PokerTableChannel',
       {
         received: (cableData) => {
-          // console.log(cableData)
+          console.log("cabledata", cableData)
+          debugger
           this.setState( {
             board: cableData.board,
             players: cableData.players,
@@ -49,6 +62,7 @@ export default class BoardContainer extends React.Component{
             smallBlind: cableData.small_blind,
             bigBlind: cableData.big_blind,
             deckID: cableData.deck_id,
+            tableID: cableData.id,
             dealerButtonPosition: cableData.dealer_button_position,
             dealt: cableData.dealt,
             phase: cableData.phase,
@@ -56,23 +70,67 @@ export default class BoardContainer extends React.Component{
             pot: cableData.pot,
             currentPlayerPos: cableData.current_turn_position,
             winner: cableData.winner,
-            winningHand: cableData.winning_hand
+            winningHand: cableData.winning_hand,
+            playersLoggedIn: this.state.playersLoggedIn
           })
         }
       })
+      console.log("TABLE IDDDDD", this.state.tableID )
+      // this.updateTable()
+      this.loggedIn()
+      // console.log(this.state)
+      // this.getUsers(parseInt(this.props.match.url.slice(-3)))
+      // .then( (data) => console.log("RETURN DATA USER", data) )
+      // .then( () => this.updateTable())
+      // .then( () => console.log(this.state))
+      // })
+
     }else{
+      console.log("NOT STARTED")
+      this.loggedIn()
       this.getCards()
-      .then( () => this.getUsers() )
       .then( () => this.createTableRequest() )
+      .then( () => this.updatePlayerTable() )
     }
   }
 
-  getUsers(){
-    return fetch('http://localhost:3000/users')
+  updatePlayerTable(){
+    let id = parseInt(sessionStorage.getItem("user_id"))
+    let table = this.state.tableID || parseInt(this.props.match.url.slice(-3))
+    return fetch(`http://localhost:3000/users/${id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "PATCH",
+        body: JSON.stringify({
+          user:
+          {
+            current_table: table
+          }
+        })
+    })
+    .then( res => res.json() )
+  }
+
+  getUsers(tableID){
+    console.log("IN GET USERS")
+    console.log("TABLEID", this.state.tableID)
+    return fetch(`http://localhost:3000/users/?pokertable_id=${tableID}`)
     .then( res => res.json() )
     .then( data => this.setState({
-      players: data
+      players: this.state.players.concat(data)
     }))
+  }
+
+  loggedIn(){
+    // console.log("LOGGED", this.state.playersLoggedIn)
+    let id = this.state.playersLoggedIn.concat(parseInt(sessionStorage.getItem("user_id")))
+    // console.log(id)
+    this.setState({
+      playersLoggedIn: id
+    })
+    // this.updateTable()
   }
 
   getCards(){
@@ -81,6 +139,7 @@ export default class BoardContainer extends React.Component{
     .then( data => this.setState({
       deckID: data.deck_id
     }))
+    // this.updateTable()
   }
 
   drawCard(num){
@@ -93,6 +152,7 @@ export default class BoardContainer extends React.Component{
   }
 
   updateTable(){
+    console.log("HITTING UPDATE TABLE,", this.state)
     this.props.cableApp.pokertablechannel.send(
       {poker_table:
         {
@@ -105,6 +165,7 @@ export default class BoardContainer extends React.Component{
           small_blind: this.state.smallBlind,
           big_blind: this.state.bigBlind,
           deck_id: this.state.deckID,
+          table_id: this.state.tableID,
           dealer_button_position: this.state.dealerButtonPosition,
           dealt: this.state.dealt,
           phase: this.state.phase,
@@ -112,7 +173,8 @@ export default class BoardContainer extends React.Component{
           pot: this.state.pot,
           current_turn_position: this.state.currentPlayerPos,
           winner: this.state.winner,
-          winning_hand: this.state.winningHand
+          winning_hand: this.state.winningHand,
+          players_logged_in: this.state.playersLoggedIn
         },
         user_updates: {
           id: this.state.tableID
@@ -172,6 +234,9 @@ export default class BoardContainer extends React.Component{
   }
 
   createPlayerHand(){
+    this.getUsers(this.state.tableID)
+    .then( () => {
+    console.log(this.state)
     let newPlayerObjArr
     let arrayOfCards
     let num = parseInt(this.state.players.length) * 2
@@ -183,6 +248,7 @@ export default class BoardContainer extends React.Component{
       })
     })
     .then( () => this.setState( { playerHand: newPlayerObjArr, dealt: true }, () => this.updateTable() ) )
+  })
   }
 
   createTableRequest(newPlayerObjArr){
@@ -226,7 +292,7 @@ export default class BoardContainer extends React.Component{
           },
           user_updates:
           {
-            user_id: playerIDs,
+            user_id: this.state.playersLoggedIn,
             hands: newPlayerObjArr
           }
         })
@@ -236,12 +302,12 @@ export default class BoardContainer extends React.Component{
       //
       // })
       .then(data => {
-        this.setState( { tableID: data.id }, () => {
+        this.setState( { tableID: data.id  }, () => {
           this.props.cableApp.pokertablechannel =
           this.props.cableApp.cable.subscriptions.create('PokerTableChannel',
           {
             received: (cableData) => {
-              // console.log(cableData)
+              console.log(cableData)
               this.setState( {
                 board: cableData.board,
                 players: cableData.players,
@@ -251,6 +317,7 @@ export default class BoardContainer extends React.Component{
                 smallBlind: cableData.small_blind,
                 bigBlind: cableData.big_blind,
                 deckID: cableData.deck_id,
+                tableID: cableData.id,
                 dealerButtonPosition: cableData.dealer_button_position,
                 dealt: cableData.dealt,
                 phase: cableData.phase,
@@ -263,6 +330,9 @@ export default class BoardContainer extends React.Component{
             }
           }
         )
+        // this.updateTable()
+        console.log("IN CREATE TABLE", this.state.tableID)
+
       } )
     })
   }
@@ -299,7 +369,7 @@ export default class BoardContainer extends React.Component{
   }
 
   nextCard(){
-    debugger
+    // debugger
     if(this.state.board.length === 0){
       this.dealFlop()
     }else if(this.state.board.length < 4){
@@ -331,7 +401,7 @@ export default class BoardContainer extends React.Component{
   winnerWinnerChickenDinner(winner){
     this.getUsers()
     let selectPlayer = this.state.players.filter( player => winner === player.username)
-    console.log("winner", winner)
+    // console.log("winner", winner)
     let playerID = selectPlayer[0].id
     let playerChips
 
@@ -356,7 +426,7 @@ export default class BoardContainer extends React.Component{
 
 sortAndDeclareWinner(){
   this.shuffleCards()
-  console.log("folded", this.state.foldedPlayers)
+  // console.log("folded", this.state.foldedPlayers)
   let arrayOfScoreObj = this.state.playerHand.map( playerHandObj => {
     if(!this.state.foldedPlayers.includes(playerHandObj.playerName)){
       let board = this.state.board
@@ -379,14 +449,14 @@ sortAndDeclareWinner(){
   let winnerAndLosers = arrayOfScoreObj.sort( (a, b) => {
     return b["score"] - a["score"]
   })
-  console.log("WINNNLOSE", winnerAndLosers, arrayOfScoreObj)
+  // console.log("WINNNLOSE", winnerAndLosers, arrayOfScoreObj)
   this.setState({
     winner: winnerAndLosers[0].playerName,
     winningHand: winnerAndLosers[0].hand,
     phase: "round-end",
     currentBet: 0
   }, () => this.updateTable())
-  this.updateTable()
+  // this.updateTable()
   this.winnerWinnerChickenDinner(winnerAndLosers[0].playerName)
   setTimeout( () => {
     this.redeal()
@@ -609,8 +679,8 @@ handlePlayerAction(action){
 
 render(){
 
-  console.log("cable", this.props.cableApp)
-  console.log("DECK ID", this.state.deckID)
+  // console.log("cable", this.props.cableApp)
+  // console.log("DECK ID", this.state.deckID)
   if(this.state.dealt && this.state.deckID){
     let showCards
     if(this.state.board.length > 0){

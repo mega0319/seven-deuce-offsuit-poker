@@ -95,16 +95,16 @@ export default class MessageBox extends React.Component{
     }
     // console.log(allMessages)
     return(
-      <div>
+      <div className="message-container">
         <div className="animated fadeIn message-box">
 
           <ul className="message-ul">
             {allMessages}
           </ul>
         </div>
-        <form className="message form-group animated fadeIn" onSubmit={(e) => this.handleSubmit(e)}>
+        <form className="message animated fadeIn" onSubmit={(e) => this.handleSubmit(e)}>
           <input className="message-input animatedfadeIn" onChange={(e) => this.handleInputChange(e)} type="text" value={this.state.input} />
-          <input className="btn-sm btn-default" type="submit" value="Send" />
+          <input className="message-send btn-sm btn-default" type="submit" value="Send" />
         </form>
       </div>
 

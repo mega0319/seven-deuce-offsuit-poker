@@ -32,7 +32,7 @@ class SevenTwoOhContainer extends React.Component{
       <div className="homepage">
         <NavBar logOut={() => this.logOut() }/>
         <Route exact path="/home/newgame" render={ () => <Game cableApp={this.props.cableApp}/> } />
-        <Route exact path="/home/pokertables/:id" render={() => <BoardContainer cableApp={this.props.cableApp} started="started"/>} />
+        <Route exact path="/home/pokertables/:id" render={(props) => <BoardContainer cableApp={this.props.cableApp} started="started" {...props} />} />
       </div>
     )
   }

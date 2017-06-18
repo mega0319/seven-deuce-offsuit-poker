@@ -45,7 +45,38 @@ export default class Player extends React.Component{
   render(){
 
 
+    if (this.props.position === this.props.currentPlayerPos){
     return(
+        <div className={` row position-${this.props.position}`}>
+          {/* <p className='player-stats'> {this.props.position} </p> */}
+          <p className='player-now player-stats'> {this.props.player.username}</p>
+          <p className='player-stats'> chips: {this.state.playerChips} </p>
+
+          <PlayerHand
+            position={this.props.position}
+            currentPlayerPos={this.props.currentPlayerPos}
+            handlePlayerAction={() => this.props.handlePlayerAction()}
+            key={this.props.player.id}
+            player={this.props.player.username}
+            board={this.props.board}
+            hand={this.props.hand}
+            chips={this.state.playerChips}
+            nextCard={ () => this.props.nextCard() }
+            fold={ (playerName) => this.props.fold(playerName) }
+            bet={ (value) => this.props.bet(value) }
+            updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
+            reveal= { () => this.props.reveal() }
+            phase={this.props.phase}
+            redeal={() => this.props.redeal()}
+            foldedPlayers={this.props.foldedPlayers}
+            folded={this.props.folded}
+            currentBet={this.props.currentBet}
+            call={() => this.handleCall() }
+          />
+        </div>
+      )
+      }else{
+        return (
       <div className={`row position-${this.props.position}`}>
         {/* <p className='player-stats'> {this.props.position} </p> */}
         <p className='player-stats'> {this.props.player.username}</p>
@@ -74,5 +105,7 @@ export default class Player extends React.Component{
         />
       </div>
     )
+    }
+
   }
 }

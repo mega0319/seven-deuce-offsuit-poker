@@ -25,7 +25,7 @@ export default class Bet extends Component{
 
         <input  onChange={(e) => this.handleBetChange(e)} min="0" max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
 
-        <input className="btn btn-default" type="submit" value="Bet"/>
+        <input className="btn btn-warning" type="submit" value="Bet"/>
 
       </form>
     )
