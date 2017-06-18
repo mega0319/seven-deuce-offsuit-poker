@@ -26,9 +26,8 @@ export default class MessageBox extends React.Component{
         {
 
           received: (cableData) => {
-            console.log("CNSOLE LOG:", cableData)
+            // console.log("CNSOLE LOG:", cableData)
             this.setState( { messages: [...this.state.messages, cableData] }) }
-
         })
       })
     })
@@ -82,10 +81,11 @@ export default class MessageBox extends React.Component{
   handleSubmit(e){
     e.preventDefault()
     this.handleMessageCreate()
+    this.setState({ input: ''})
   }
 
   render(){
-    console.log('STATE:', this.state)
+    // console.log('STATE:', this.state)
     let allMessages;
 
     if (this.state.messages.length){
@@ -93,7 +93,7 @@ export default class MessageBox extends React.Component{
     }else{
       allMessages = <p>Type Message Now</p>
     }
-    console.log(allMessages)
+    // console.log(allMessages)
     return(
       <div>
         <div className="animated fadeIn message-box">

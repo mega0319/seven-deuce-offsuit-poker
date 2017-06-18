@@ -23,10 +23,8 @@ export default function NavBar(props){
           </ul>
           <p className="navbar-message">Welcome {sessionStorage.User} </p>
           <p className="navbar-message">Chips: {sessionStorage.Chips} </p>
-
-
+          <button className="btn-sm btn-default" onClick={ () => props.logOut() }>Log Out</button>
         </div>
-        <button className="logout-but btn-sm btn-default" onClick={ () => props.logOut() }>Log Out</button>
       </div>
     </nav>
   )
