@@ -17,7 +17,7 @@ export default class MessageBox extends React.Component{
   // }
 
   componentDidMount(){
-    return fetch(`http://localhost:3000/messages?pokertable_id=${this.props.tableID}`)
+    return fetch(`http://${window.location.hostname}:3000/messages?pokertable_id=${this.props.tableID}`)
     .then( res => res.json() )
     .then( data => {
       const messages = data || []
@@ -51,7 +51,7 @@ export default class MessageBox extends React.Component{
         }
       }
     )
-    // return fetch('http://localhost:3000/messages',{
+    // return fetch('http://${window.location.hostname}:3000/messages',{
     //   headers: {
     //     'Accept': 'application/json',
     //     'Content-Type': 'application/json'

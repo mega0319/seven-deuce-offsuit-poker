@@ -14,6 +14,12 @@ class LoginForm extends React.Component{
     }
   }
 
+  componentDidMount(){
+    if (sessionStorage.getItem("Authorization")){
+      this.props.history.push('/home')
+    }
+  }
+
   handleChange(e, input){
     this.setState({
       [input]: e.target.value
@@ -71,6 +77,7 @@ class LoginForm extends React.Component{
                 <Link to="/create" >Create New Account </Link>
               </div>
             </form>
+            
           </div>
         </div>
         )

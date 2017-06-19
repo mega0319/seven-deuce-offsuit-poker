@@ -5,11 +5,11 @@ import styles from '../css/NavBar.css'
 export default function NavBar(props){
 
   return (
-    <nav className="navbar navbar-inverse">
+    <nav className="animated fadeIn navbar navbar-inverse">
       <div className='container-fluid'>
         <div className='navbar-header'>
           <a className='navbar-brand'>
-            seven-deuce-offsuit
+            seven-deuce
           </a>
         </div>
 
@@ -17,7 +17,7 @@ export default function NavBar(props){
           <ul className="nav navbar-nav">
             <li><Link to="/home">Home</Link></li>
             <li><Link to="/home/newgame">New Table</Link></li>
-            <li><Link to="/games">Find Table</Link></li>
+            <li><Link to="/home/games">Find Table</Link></li>
             <li><Link to="/home/friends">Friends</Link></li>
 
           </ul>

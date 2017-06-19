@@ -1,5 +1,5 @@
 export function createUser(username, password, email){
-  return fetch('http://localhost:3000/users', {
+  return fetch(`http://${window.location.hostname}:3000/users`, {
     headers: {
       'Accept' : 'application/json',
       'Content-Type': 'application/json'
@@ -11,7 +11,7 @@ export function createUser(username, password, email){
 }
 
 export function logIn(username, password){
-  return fetch('http://localhost:3000/auth', {
+  return fetch(`http://${window.location.hostname}:3000/auth`, {
     headers: {
       'Accept' : 'application/json',
       'Content-Type': 'application/json'

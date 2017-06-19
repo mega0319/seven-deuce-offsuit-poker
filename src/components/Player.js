@@ -9,7 +9,7 @@ export default class Player extends React.Component{
   }
 
   componentDidMount(){
-    return fetch(`http://localhost:3000/users/${this.props.player.id}`)
+    return fetch(`http://${window.location.hostname}:3000/users/${this.props.player.id}`)
     .then( res => res.json() )
     // .then(console.log)
     .then( data => this.setState({ playerChips: data.play_chips}) )
@@ -20,14 +20,14 @@ export default class Player extends React.Component{
     this.userPatchRequest(chips)
   }
 
-  handleCall(){
+  handleCall(playerName){
     const chips = parseInt(this.state.playerChips) - parseInt(this.props.currentBet)
     this.userPatchRequest(chips)
-    this.props.call()
+    this.props.call(playerName)
   }
 
   userPatchRequest(chips){
-    return fetch(`http://localhost:3000/users/${this.props.player.id}`, {
+    return fetch(`http://${window.location.hostname}:3000/users/${this.props.player.id}`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export default class Player extends React.Component{
           <PlayerHand
             position={this.props.position}
             currentPlayerPos={this.props.currentPlayerPos}
-            handlePlayerAction={() => this.props.handlePlayerAction()}
+            handlePlayerAction={this.props.handlePlayerAction}
             key={this.props.player.id}
             player={this.props.player.username}
             board={this.props.board}
@@ -63,7 +63,7 @@ export default class Player extends React.Component{
             chips={this.state.playerChips}
             nextCard={ () => this.props.nextCard() }
             fold={ (playerName) => this.props.fold(playerName) }
-            bet={ (value) => this.props.bet(value) }
+            bet={ this.props.bet }
             updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
             reveal= { () => this.props.reveal() }
             phase={this.props.phase}
@@ -71,7 +71,7 @@ export default class Player extends React.Component{
             foldedPlayers={this.props.foldedPlayers}
             folded={this.props.folded}
             currentBet={this.props.currentBet}
-            call={() => this.handleCall() }
+            call={(playerName) => this.handleCall(playerName) }
           />
         </div>
       )
@@ -85,7 +85,7 @@ export default class Player extends React.Component{
         <PlayerHand
           position={this.props.position}
           currentPlayerPos={this.props.currentPlayerPos}
-          handlePlayerAction={() => this.props.handlePlayerAction()}
+          handlePlayerAction={(playerName) => this.props.handlePlayerAction(playerName)}
           key={this.props.player.id}
           player={this.props.player.username}
           board={this.props.board}
@@ -93,7 +93,7 @@ export default class Player extends React.Component{
           chips={this.state.playerChips}
           nextCard={ () => this.props.nextCard() }
           fold={ (playerName) => this.props.fold(playerName) }
-          bet={ (value) => this.props.bet(value) }
+          bet={ (value, playerName) => this.props.bet(value,playerName) }
           updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
           reveal= { () => this.props.reveal() }
           phase={this.props.phase}
@@ -101,7 +101,7 @@ export default class Player extends React.Component{
           foldedPlayers={this.props.foldedPlayers}
           folded={this.props.folded}
           currentBet={this.props.currentBet}
-          call={() => this.handleCall() }
+          call={(playerName) => this.handleCall(playerName) }
         />
       </div>
     )

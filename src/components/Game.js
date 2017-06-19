@@ -4,7 +4,7 @@ import BoardContainer from '../containers/BoardContainer'
 export default function Game(props){
 
   return(
-    <div className="game-container">
+    <div className="find-games game-container">
 
       <BoardContainer cableApp={props.cableApp}/>
 

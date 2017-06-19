@@ -165,7 +165,7 @@ export default class PlayerHand extends React.Component{
 
 
   render(){
-
+    console.log("PLAYERHAND PROPS", this.props)
     if(this.state.hand && !this.state.folded && this.state.hand ){
 
       const fullHand = this.props.board.concat(this.props.hand)
@@ -188,9 +188,9 @@ export default class PlayerHand extends React.Component{
 
               {handSolve ? <p className="board-text">{handSolve}</p> : null}
 
-              <button className="btn btn-success" onClick={() => this.props.call()}> Call </button>
+              <button className="action-buttons btn btn-success" onClick={() => this.props.call(this.props.player)}> Call </button>
 
-              <button className="btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+              <button className="action-buttons btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
             </div>
           )
         }else{
@@ -198,13 +198,15 @@ export default class PlayerHand extends React.Component{
             <div className="">
               {currentHand}
 
+
+
               {handSolve ? <p className="board-text">{handSolve}</p> : null}
 
-              <Bet player={this.props.player} bet={this.props.bet} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
+              <Bet player={this.props.player} bet={(value, playerName) => this.props.bet(value, playerName)} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
 
-              <button className="btn btn-success" onClick={() => this.props.handlePlayerAction() }> Check </button>
+              <button className="action-buttons btn btn-success" onClick={() => this.props.handlePlayerAction(this.props.player) }> Check </button>
 
-              <button className="btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+              <button className="action-buttons btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
             </div>
           )
         }
@@ -219,15 +221,22 @@ export default class PlayerHand extends React.Component{
 
           </div>
         )
-      } else{
+      }else if( this.props.phase === "round-end"){
+        return (
+          <div className="card animated fadeIn">
+            {currentHand}
+          </div>
+        )
+
+      }else{
         return(
-        <div>
+          <div>
 
-          <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
-          <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
 
-        </div>
-      )
+          </div>
+        )
       }
     }else{
       return(
