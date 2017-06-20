@@ -20,7 +20,7 @@ export default class AllGames extends React.Component{
     console.log(this.state.games)
     let allGames = this.state.games.map( game =>  {
       return (
-        <div className="animated slideInLeft panel panel-danger">
+        <div key={game.id} className="animated slideInLeft panel panel-danger">
           <div className="panel-heading">
             <h3 className="panel-title">{game.name}</h3>
           </div>

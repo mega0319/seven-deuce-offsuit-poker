@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 
 export default class Bet extends Component{
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
 
-    this.state = { betAmount: '' }
+    this.state = { betAmount: props.currentBet ? props.currentBet*2 : 0 }
   }
 
   handleBetChange(e){
@@ -32,7 +32,7 @@ export default class Bet extends Component{
     }else{
       return(
         <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
-          <span class="input-group-addon">$</span>
+          {/* <span className="input-group-addon">$</span> */}
           <input  className="form-control action-buttons" onChange={(e) => this.handleBetChange(e)} min="0" max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
 
           <input className="btn btn-warning" type="submit" value="Bet"/>

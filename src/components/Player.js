@@ -48,7 +48,7 @@ export default class Player extends React.Component{
     return(
         <div className={` row position-${this.props.position}`}>
           {/* <p className='player-stats'> {this.props.position} </p> */}
-          <p className='player-now player-stats'> {this.props.player.username}</p>
+          <p className='player-now animated flash player-stats'> {this.props.player.username}</p>
           <p className='player-stats'> chips: {this.state.playerChips} </p>
 
           <PlayerHand

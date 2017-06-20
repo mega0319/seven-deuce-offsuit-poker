@@ -64,7 +64,7 @@ export default class MessageBox extends React.Component{
     if (this.state.messages.length){
       allMessages = this.state.messages.map( message => <MessageItem key={message.id} player={message.user.username} content={message.content} /> )
     }else{
-      allMessages = <p>Type Message Now</p>
+      allMessages = <p>Chat with other players!</p>
     }
     return(
       <div className="message-container">
@@ -75,7 +75,7 @@ export default class MessageBox extends React.Component{
           </ul>
         </div>
         <form className="message animated fadeIn" onSubmit={(e) => this.handleSubmit(e)}>
-          <input className="message-input animatedfadeIn" onChange={(e) => this.handleInputChange(e)} type="text" value={this.state.input} />
+          <input className="message-input animatedfadeIn" onChange={(e) => this.handleInputChange(e)} type="text" value={this.state.input} placeholder="Type message here" />
           <input className="message-send btn-sm btn-default" type="submit" value="Send" />
         </form>
       </div>

@@ -35,18 +35,12 @@ export default class BoardContainer extends React.Component{
 
   componentDidMount(){
     if (this.props.started){
-      // this.setState({ tableID: this.props.match.url.slice(-3) })
-      console.log("ALREADY STARTED", this.props.match.url.slice(-3))
       this.updatePlayerTable()
-      .then( console.log )
 
-      // this.getUsers()
-      // .then( () =>  {
       this.props.cableApp.pokertablechannel =
       this.props.cableApp.cable.subscriptions.create('PokerTableChannel',
       {
         received: (cableData) => {
-          console.log("cabledata", cableData)
           debugger
           this.setState( {
             board: cableData.board,
@@ -73,7 +67,6 @@ export default class BoardContainer extends React.Component{
           })
         }
       })
-      console.log("TABLE IDDDDD", this.state.tableID )
       this.loggedIn()
 
 
@@ -142,7 +135,6 @@ export default class BoardContainer extends React.Component{
   }
 
   updateTable(){
-    console.log("HITTING UPDATE TABLE,", this.state)
     this.props.cableApp.pokertablechannel.send(
       {poker_table:
         {
@@ -195,7 +187,7 @@ export default class BoardContainer extends React.Component{
   createPlayerHand(){
     this.getUsers(this.state.tableID)
     .then( () => {
-      console.log(this.state)
+      console.log("STATE INSIDE PLAYERHAND", this.state)
       let newPlayerObjArr
       let arrayOfCards
       let num = parseInt(this.state.players.length, 10) * 2
@@ -269,9 +261,7 @@ export default class BoardContainer extends React.Component{
             }
           }
         )
-        console.log("IN CREATE TABLE", this.state.tableID, this.state.tableName)
-
-      } )
+      })
     })
   }
 
@@ -306,7 +296,6 @@ export default class BoardContainer extends React.Component{
   }
 
   nextCard(){
-    // debugger
     if(this.state.board.length === 0){
       this.dealFlop()
     }else if(this.state.board.length < 4){
@@ -435,7 +424,6 @@ fold(playerName){
       foldedPlayers: moreFoldedPlayers, message: `${playerName} folds`
     }, () => {
       this.sortAndDeclareWinner()
-      // this.updateTable()
     })
   }else if(this.state.foldedPlayers.length === this.state.players.length - 1){
     this.setState({
@@ -450,7 +438,6 @@ fold(playerName){
     }, () => {
 
       this.nextCard()
-      // this.updateTable()
     })
   }
   else{
@@ -631,8 +618,11 @@ handlePlayerAction(playerName){
   console.log("final position", finalPosition)
   console.log("currentPlayerPos", this.state.currentPlayerPos)
   if (this.state.currentPlayerPos === finalPosition ){
+    console.log("NEXT CARD!!!")
     this.nextCard()
   }else{
+    console.log("NEXT POSITIONNN!!!")
+
     this.setState({
       currentPlayerPos: this.playerPositioning(), message: `${playerName} checks`
     }, () => this.updateTable() )
@@ -647,7 +637,7 @@ render(){
   if(this.state.dealt && this.state.deckID){
     let showCards
     if(this.state.board.length > 0){
-      showCards = this.state.board.map( (el,index) => <img key={index} className="card animated slideInDown" src={el.image} alt="boohoo" width="80" height="100"/> )
+      showCards = this.state.board.map( (el,index) => <img key={el.image} className="card animated slideInDown" src={el.image} alt="boohoo" width="75" height="100"/> )
     }
     let hands = []
     this.state.playerHand.forEach( (handInfo, idx) => {
@@ -684,10 +674,10 @@ render(){
       {this.state.tableName ? <p className="animated slideInDown board-text">{this.state.tableName}</p> : null}
       <div className="center-board ">
         {this.state.message ? <p className="animated pulse infinite board-text">{this.state.message}</p> : null}
-        <p className="board-text">{this.state.phase}</p>
+        <p className="board-text animated fadeIn">{this.state.phase}</p>
+        {this.state.phase === "round-end" ? <h3 className="board-text animated flash"> {this.state.winner} wins with {this.state.winningHand} </h3> : null}
+        <h4 className="board-text pot animated fadeIn">Pot: {this.state.pot}</h4>
         {showCards ? showCards : null}
-        {this.state.phase === "round-end" ? <h4 className="board-text"> {this.state.winner} wins with {this.state.winningHand} </h4> : null}
-        <h4 className="board-text pot">Pot: {this.state.pot}</h4>
       </div>
 
       {hands}
@@ -701,7 +691,7 @@ render(){
 
       <div className="center-board ">
         {this.state.tableName ? <p className="animated zoomIn board-text">Welcome to {this.state.tableName}</p> : null}
-        {sessionStorage.getItem("User") === "mega0319" ? <button className="btn-lg btn-success" onClick={() => this.dealToPlayers() }>Deal!</button> : <h3 className="board-text animated infinite pulse"> WAITING FOR DEAL</h3>}
+        {sessionStorage.getItem("User") === "mega0319" ? <button className="animated pulse infinite btn-lg btn-success" onClick={() => this.dealToPlayers() }>Deal!</button> : <h3 className="board-text animated infinite pulse"> WAITING FOR DEAL</h3>}
 
       </div>
     </div>

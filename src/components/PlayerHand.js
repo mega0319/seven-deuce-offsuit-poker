@@ -172,7 +172,7 @@ export default class PlayerHand extends React.Component{
 
       const codes = fullHand.map( card => card.code )
 
-      let currentHand = this.state.hand.map( (el, idx) => <img key={idx} className="card animated rollIn" src={el.image} alt="boohoo" width="80" height="100"/> )
+      let currentHand = this.state.hand.map( (el, idx) => <img key={el.image} className="card animated rollIn" src={el.image} alt="boohoo" width="75" height="100"/> )
 
       let preSolve = this.solveHand(codes)
 
@@ -234,8 +234,8 @@ export default class PlayerHand extends React.Component{
         return(
           <div>
 
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="100"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="75" height="100"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="75" height="100"/>
 
           </div>
         )
