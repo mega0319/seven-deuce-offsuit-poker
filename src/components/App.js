@@ -2,7 +2,6 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import CreateUser from './CreateUser'
 import LoginForm from './LoginForm'
-import AllGames from './AllGames'
 import SevenTwoOhContainer from '../containers/SevenTwoOhContainer'
 import styles from '../css/App.css'
 

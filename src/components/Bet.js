@@ -20,14 +20,24 @@ export default class Bet extends Component{
   }
 
   render(){
-    return(
-      <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
+    if(this.props.raise){
+      return(
+        <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
+          <span class="input-group-addon">$</span>
+          <input  className="form-control action-buttons" onChange={(e) => this.handleBetChange(e)} min={this.props.currentBet * 2} max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
 
-        <input  className="action-buttons" onChange={(e) => this.handleBetChange(e)} min="0" max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
+          <input className="btn btn-warning" type="submit" value="RAISE"/>
+        </form>
+      )
+    }else{
+      return(
+        <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>
+          <span class="input-group-addon">$</span>
+          <input  className="form-control action-buttons" onChange={(e) => this.handleBetChange(e)} min="0" max={this.props.chips} type="number" step="100" value={this.state.betAmount}/>
 
-        <input className="btn btn-warning" type="submit" value="Bet"/>
-
-      </form>
-    )
+          <input className="btn btn-warning" type="submit" value="Bet"/>
+        </form>
+      )
+    }
   }
 }

@@ -11,17 +11,16 @@ export default class Player extends React.Component{
   componentDidMount(){
     return fetch(`http://${window.location.hostname}:3000/users/${this.props.player.id}`)
     .then( res => res.json() )
-    // .then(console.log)
     .then( data => this.setState({ playerChips: data.play_chips}) )
   }
 
   updatePlayChips(betAmount){
-    const chips = parseInt(this.state.playerChips) - parseInt(betAmount)
+    const chips = parseInt(this.state.playerChips, 10) - parseInt(betAmount, 10)
     this.userPatchRequest(chips)
   }
 
   handleCall(playerName){
-    const chips = parseInt(this.state.playerChips) - parseInt(this.props.currentBet)
+    const chips = parseInt(this.state.playerChips, 10) - parseInt(this.props.currentBet, 10)
     this.userPatchRequest(chips)
     this.props.call(playerName)
   }

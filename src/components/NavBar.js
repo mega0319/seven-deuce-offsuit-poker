@@ -21,9 +21,9 @@ export default function NavBar(props){
             <li><Link to="/home/friends">Friends</Link></li>
 
           </ul>
-          <p className="navbar-message">Welcome {sessionStorage.User} </p>
-          <p className="navbar-message">Chips: {sessionStorage.Chips} </p>
-          <button className="btn-sm btn-default" onClick={ () => props.logOut() }>Log Out</button>
+          <p className="navbar-text navbar-right">Welcome {sessionStorage.User} </p>
+          <p className="navbar-text navbar-right">Chips: {sessionStorage.Chips} </p>
+          <button className="navbar-btn navbar-right btn-default" onClick={ () => props.logOut() }>Log Out</button>
         </div>
       </div>
     </nav>

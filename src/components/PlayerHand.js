@@ -158,7 +158,7 @@ export default class PlayerHand extends React.Component{
   }
 
   handPoints(points){
-    let handPoints = parseInt(points)
+    let handPoints = parseInt(points, 10)
     let handPlayerObj = { player: this.props.player, points: handPoints }
     this.props.reveal(handPlayerObj)
   }
@@ -187,6 +187,8 @@ export default class PlayerHand extends React.Component{
               {currentHand}
 
               {handSolve ? <p className="board-text">{handSolve}</p> : null}
+
+              <Bet player={this.props.player} bet={(value, playerName) => this.props.bet(value, playerName)} updatePlayChips={this.props.updatePlayChips} currentBet={this.state.currentBet} raise="true" chips={this.props.chips}/>
 
               <button className="action-buttons btn btn-success" onClick={() => this.props.call(this.props.player)}> Call </button>
 

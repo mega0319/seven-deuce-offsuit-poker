@@ -1,5 +1,4 @@
 import React from 'react'
-import NavBar from './NavBar'
 
 export default class AllGames extends React.Component{
   constructor(){

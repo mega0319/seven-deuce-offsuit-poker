@@ -12,9 +12,6 @@ export default class MessageBox extends React.Component{
     }
   }
 
-  // componentWillReceiveProps(newProps){
-  //     this.setState({ tableID: newProps.tableID})
-  // }
 
   componentDidMount(){
     return fetch(`http://${window.location.hostname}:3000/messages?pokertable_id=${this.props.tableID}`)
@@ -26,12 +23,10 @@ export default class MessageBox extends React.Component{
         {
 
           received: (cableData) => {
-            // console.log("CNSOLE LOG:", cableData)
             this.setState( { messages: [...this.state.messages, cableData] }) }
         })
       })
     })
-    // this.props.getUsers()
 
   }
 
@@ -41,7 +36,6 @@ export default class MessageBox extends React.Component{
   }
 
   handleMessageCreate(){
-    // console.log("PROPS IN MSGS", this.props)
     this.props.cableApp.messageschannel.send(
       {message:
         {
@@ -51,26 +45,6 @@ export default class MessageBox extends React.Component{
         }
       }
     )
-    // return fetch('http://${window.location.hostname}:3000/messages',{
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   method: "POST",
-    //   body: JSON.stringify(
-    //     {message:
-    //       {
-    //         user_id: sessionStorage.getItem("user_id"),
-    //         poker_table_id: this.props.tableID,
-    //         content: this.state.input
-    //       }
-    //     }
-    //   )
-    // })
-    // .then(res => res.json() )
-    // // .then(console.log)
-    // .then( data => this.setState( { messages: data, input: ''} ))
-
   }
 
 
@@ -85,7 +59,6 @@ export default class MessageBox extends React.Component{
   }
 
   render(){
-    // console.log('STATE:', this.state)
     let allMessages;
 
     if (this.state.messages.length){
@@ -93,7 +66,6 @@ export default class MessageBox extends React.Component{
     }else{
       allMessages = <p>Type Message Now</p>
     }
-    // console.log(allMessages)
     return(
       <div className="message-container">
         <div className="animated fadeIn message-box">
