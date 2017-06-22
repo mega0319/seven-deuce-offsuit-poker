@@ -53,11 +53,14 @@ class LoginForm extends React.Component{
 
     return (
       <div id="black-wrapper">
+        <div className="first-divider">
+
+        </div>
       <div className="full-form">
-        <img src={require('../seven-deuce.jpg')} alt="" width="250" height="200"/>
+        <img src={require('../SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
         {sessionStorage.getItem("Error") ? <p className="error">{sessionStorage.getItem("Error")}</p> : null}
         {sessionStorage.removeItem("Error")}
-        <h3> Please Log In </h3>
+        <h3 className="board-text"> Please Log In </h3>
         <form onSubmit={(e) => this.handleLogIn(e) }>
           <div className="form-group" >
             <input className="form-control form-custom" type="text" value={this.state.username} placeholder="username"
@@ -77,7 +80,14 @@ class LoginForm extends React.Component{
                 <Link to="/create" >Create New Account </Link>
               </div>
             </form>
-            
+
+          </div>
+          <div className="login-icon-row">
+            <a className="login-icons" href="http://wwww.github.com/mega0319" ><i className="fa fa-github fa-3x" aria-hidden="true"></i> </a>
+            <a className="login-icons" href="https://www.linkedin.com/in/naz-khan-32921b41" ><i className="fa fa-linkedin-square fa-3x" aria-hidden="true"></i> </a>
+            <a className="login-icons" href="http://wwww.naz-khan.com" ><i className="fa fa-user-circle fa-3x" aria-hidden="true"></i> </a>
+
+            <h4 className="board-text center-text">created by Naz Khan</h4>
           </div>
         </div>
         )

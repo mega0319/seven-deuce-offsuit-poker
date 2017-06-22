@@ -14,12 +14,13 @@ export default class Bet extends Component{
   handleBetSubmit(e){
     e.preventDefault()
     if(this.state.betAmount > 0)
-    this.props.bet(this.state.betAmount, this.props.player)
+    this.props.bet(this.state.betAmount, this.props.player, this.props.raise)
     if(this.state.betAmount > 0)
     this.props.updatePlayChips(this.state.betAmount)
   }
 
   render(){
+    console.log("raise in bet", this.props.raise)
     if(this.props.raise){
       return(
         <form className="board-inputs form-inline animated fadeIn" onSubmit={(e) => this.handleBetSubmit(e) }>

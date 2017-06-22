@@ -1,3 +1,8 @@
+body {
+  background: #800020;
+
+}
+
 .App {
   text-align: center;
 }
@@ -66,4 +71,27 @@ position: fixed;
 
 .front-page{
   position:fixed;
+}
+
+.first-divider{
+  background-color: black;
+  width: 1200vh;
+  height: 350px;
+}
+
+.nav-card-logo {
+  margin: 0;
+  padding: 0;
+}
+
+.login-icon-row{
+  background-color: #800020;
+  bottom: 5%;
+  left: 43%;
+  text-align: center;
+  position: absolute;
+}
+
+.center-text{
+  text-align: center;
 }

@@ -8,9 +8,8 @@ export default function NavBar(props){
     <nav className="animated fadeIn navbar navbar-inverse">
       <div className='container-fluid'>
         <div className='navbar-header'>
-          <a className='navbar-brand'>
-            seven-deuce
-          </a>
+            <img className="navbar-brand nav-card-logo" src={require('../SDOS_Logo-01.svg')} alt="" width="65" height="50"/>
+
         </div>
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

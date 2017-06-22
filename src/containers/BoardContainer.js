@@ -104,7 +104,7 @@ export default class BoardContainer extends React.Component{
     return fetch(`http://${window.location.hostname}:3000/users/?pokertable_id=${tableID}`)
     .then( res => res.json() )
     .then( data => this.setState({
-      players: this.state.players.concat(data)
+      players: this.state.players.includes(data) ? this.state.players : this.state.players.concat(data)
     }))
   }
 
@@ -379,7 +379,6 @@ sortAndDeclareWinner(){
     phase: "round-end",
     currentBet: 0,
     bettorPosition: 0
-    // dealerButtonPosition: this.state.dealerButtonPosition + 1
   }, () => this.updateTable())
   this.winnerWinnerChickenDinner(winnerAndLosers[0].playerName)
   setTimeout( () => {
@@ -390,14 +389,15 @@ sortAndDeclareWinner(){
 }
 
 
-bet(value, playerName){
+bet(value, playerName, raise){
+  console.log("in bet", raise)
   const updatePot = parseInt(this.state.pot, 10) + parseInt(value, 10)
   this.setState( {
     pot: updatePot,
     bettorPosition: this.state.currentPlayerPos,
     currentPlayerPos: this.playerPositioning(),
     currentBet: parseInt(value, 10),
-    message: `${playerName} bets ${value}`
+    message: raise ? `${playerName} raises to ${value}!` : `${playerName} bets ${value}!`
   }, () => this.updateTable() )
 }
 
@@ -406,7 +406,7 @@ call(playerName){
   console.log("current", this.state.currentPlayerPos)
   let array = this.playerPArray()
   let finalPosition = array[array.length - 1]
-  if (this.playerPositioning() != this.state.bettorPosition){
+  if (this.playerPositioning() !== this.state.bettorPosition){
     this.setState({ pot: this.state.pot + this.state.currentBet, currentPlayerPos: this.playerPositioning(), message: `${playerName} calls` }, () => this.updateTable())
   }else{
     this.setState({ pot: this.state.pot + this.state.currentBet, message: `${playerName} calls` }, () => this.nextCard() )
@@ -588,10 +588,8 @@ findFlush(handArray){
 
 handPoints(points){
   let handPoints = parseInt(points, 10)
-  debugger
   let handPlayerObj = { player: this.props.player, points: handPoints }
   this.props.reveal(handPlayerObj)
-  debugger
 }
 
 redeal(){
@@ -607,9 +605,18 @@ redeal(){
     winner: '',
     winningHand: '',
     pot: 0,
-    message: ''
+    message: '',
+    dealerButtonPosition: this.handleDealerButton()
   }, () => this.updateTable())
 
+}
+
+handleDealerButton(){
+  if (this.state.dealerButtonPosition === this.state.players.length){
+    return 1
+  }else{
+    return this.state.dealerButtonPosition + 1
+  }
 }
 
 handlePlayerAction(playerName){
@@ -637,7 +644,7 @@ render(){
   if(this.state.dealt && this.state.deckID){
     let showCards
     if(this.state.board.length > 0){
-      showCards = this.state.board.map( (el,index) => <img key={el.image} className="card animated slideInDown" src={el.image} alt="boohoo" width="75" height="100"/> )
+      showCards = this.state.board.map( (el,index) => <img key={el.image} className="card animated slideInDown" src={el.image} alt="boohoo" width="80" height="105"/> )
     }
     let hands = []
     this.state.playerHand.forEach( (handInfo, idx) => {
@@ -653,9 +660,10 @@ render(){
               hand={handInfo.hand}
               nextCard={ () => this.nextCard() }
               fold={ (playerName) => this.fold(playerName) }
-              bet={ (value, playerName) => this.bet(value, playerName) }
+              bet={ (value, playerName, raise) => this.bet(value, playerName, raise) }
               reveal={ (playerHandObj) => this.findWinningHand(playerHandObj)}
               phase={this.state.phase}
+              dealer={this.state.dealerButtonPosition}
               currentPlayerPos={this.state.currentPlayerPos}
               redeal={() => this.redeal()}
               foldedPlayers={this.state.foldedPlayers}

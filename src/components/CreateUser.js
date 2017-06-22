@@ -28,7 +28,7 @@ export default class CreateUser extends React.Component {
       title: 'Confirm to submit',
       message: 'You are about to create an account. Confirm and proceed to log in.',
       confirmLabel: 'Confirm',
-      cancelLabel: 'Cancel',                             
+      cancelLabel: 'Cancel',
       onConfirm: () => createUser(this.state.username, this.state.password, this.state.email)
       .then( () => this.props.history.push('/home')
     ),
@@ -42,9 +42,9 @@ render(){
   return (
     <div className="full-form container-fluid">
 
-      <img src={require('../seven-deuce.jpg')} alt="" width="250" height="200"/>
+      <img src={require('../SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
 
-      <h3> Create A New Account </h3>
+      <h3 className="board-text"> Create A New Account </h3>
 
       <form onSubmit={ (e) => this.handleSubmit(e)}>
         <div className="form-group">

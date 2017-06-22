@@ -172,7 +172,7 @@ export default class PlayerHand extends React.Component{
 
       const codes = fullHand.map( card => card.code )
 
-      let currentHand = this.state.hand.map( (el, idx) => <img key={el.image} className="card animated rollIn" src={el.image} alt="boohoo" width="75" height="100"/> )
+      let currentHand = this.state.hand.map( (el, idx) => <img key={el.image} className="card animated rollIn" src={el.image} alt="boohoo" width="80" height="105"/> )
 
       let preSolve = this.solveHand(codes)
 
@@ -183,12 +183,12 @@ export default class PlayerHand extends React.Component{
       if(this.props.currentPlayerPos === this.props.position && this.props.player === sessionStorage.getItem("User")){
         if(this.state.currentBet > 0){
           return(
-            <div className="">
+            <div className="player-hand">
               {currentHand}
 
-              {handSolve ? <p className="board-text">{handSolve}</p> : null}
+              {handSolve ? <p className="hand-solve board-text">{handSolve}</p> : null}
 
-              <Bet player={this.props.player} bet={(value, playerName) => this.props.bet(value, playerName)} updatePlayChips={this.props.updatePlayChips} currentBet={this.state.currentBet} raise="true" chips={this.props.chips}/>
+              <Bet player={this.props.player} bet={(value, playerName, raise) => this.props.bet(value, playerName, raise)} updatePlayChips={this.props.updatePlayChips} currentBet={this.state.currentBet} raise="true" chips={this.props.chips}/>
 
               <button className="action-buttons btn btn-success" onClick={() => this.props.call(this.props.player)}> Call </button>
 
@@ -197,14 +197,14 @@ export default class PlayerHand extends React.Component{
           )
         }else{
           return(
-            <div className="">
+            <div className="player-hand">
               {currentHand}
 
 
 
-              {handSolve ? <p className="board-text">{handSolve}</p> : null}
+              {handSolve ? <p className="hand-solve board-text">{handSolve}</p> : null}
 
-              <Bet player={this.props.player} bet={(value, playerName) => this.props.bet(value, playerName)} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
+              <Bet player={this.props.player} bet={(value, playerName, raise) => this.props.bet(value, playerName, raise)} updatePlayChips={this.props.updatePlayChips} chips={this.props.chips}/>
 
               <button className="action-buttons btn btn-success" onClick={() => this.props.handlePlayerAction(this.props.player) }> Check </button>
 
@@ -214,12 +214,12 @@ export default class PlayerHand extends React.Component{
         }
       }else if (this.props.player === sessionStorage.getItem("User")){
         return(
-          <div className="">
+          <div className="player-hand">
 
 
             {currentHand}
 
-            {handSolve ? <p className="board-text">{handSolve}</p> : null}
+            {handSolve ? <p className="hand-solve board-text">{handSolve}</p> : null}
 
           </div>
         )
@@ -234,8 +234,8 @@ export default class PlayerHand extends React.Component{
         return(
           <div>
 
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="75" height="100"/>
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="75" height="100"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="105"/>
+            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="105"/>
 
           </div>
         )

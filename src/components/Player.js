@@ -47,9 +47,11 @@ export default class Player extends React.Component{
     if (this.props.position === this.props.currentPlayerPos){
     return(
         <div className={` row position-${this.props.position}`}>
+          {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../btn.svg')} alt="" width="60" height="60"/> : null}
           {/* <p className='player-stats'> {this.props.position} </p> */}
           <p className='player-now animated flash player-stats'> {this.props.player.username}</p>
           <p className='player-stats'> chips: {this.state.playerChips} </p>
+
 
           <PlayerHand
             position={this.props.position}
@@ -62,7 +64,7 @@ export default class Player extends React.Component{
             chips={this.state.playerChips}
             nextCard={ () => this.props.nextCard() }
             fold={ (playerName) => this.props.fold(playerName) }
-            bet={ this.props.bet }
+            bet={ (value, playerName, raise) => this.props.bet(value,playerName, raise) }
             updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
             reveal= { () => this.props.reveal() }
             phase={this.props.phase}
@@ -77,7 +79,7 @@ export default class Player extends React.Component{
       }else{
         return (
       <div className={`row position-${this.props.position}`}>
-        {/* <p className='player-stats'> {this.props.position} </p> */}
+        {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../btn.svg')} alt="" width="60" height="60"/> : null}
         <p className='player-stats'> {this.props.player.username}</p>
         <p className='player-stats'> chips: {this.state.playerChips} </p>
 
@@ -92,7 +94,7 @@ export default class Player extends React.Component{
           chips={this.state.playerChips}
           nextCard={ () => this.props.nextCard() }
           fold={ (playerName) => this.props.fold(playerName) }
-          bet={ (value, playerName) => this.props.bet(value,playerName) }
+          bet={ (value, playerName, raise) => this.props.bet(value,playerName, raise) }
           updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
           reveal= { () => this.props.reveal() }
           phase={this.props.phase}

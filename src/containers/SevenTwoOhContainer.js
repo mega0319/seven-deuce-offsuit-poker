@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import NavBar from '../components/NavBar'
 import Game from '../components/Game'
 import AllGames from '../components/AllGames'
@@ -32,9 +32,11 @@ class SevenTwoOhContainer extends React.Component{
     return(
       <div className="homepage">
         <NavBar logOut={() => this.logOut() }/>
-        <Route exact path="/home/newgame" render={ () => <Game cableApp={this.props.cableApp}/> } />
-        <Route exact path="/home/pokertables/:id" render={(props) => <BoardContainer cableApp={this.props.cableApp} started="started" {...props} />} />
-        <Route exact path="/home/games" component={AllGames} />
+        <Switch>
+          <Route exact path="/home/newgame" render={ () => <Game cableApp={this.props.cableApp}/> } />
+          <Route exact path="/home/pokertables/:id" render={(props) => <BoardContainer cableApp={this.props.cableApp} started="started" {...props} />} />
+          <Route exact path="/home/games" component={AllGames} />
+        </Switch>
       </div>
     )
   }
