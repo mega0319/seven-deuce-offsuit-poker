@@ -41,7 +41,6 @@ export default class BoardContainer extends React.Component{
       this.props.cableApp.cable.subscriptions.create('PokerTableChannel',
       {
         received: (cableData) => {
-          debugger
           this.setState( {
             board: cableData.board,
             players: cableData.players,
@@ -65,6 +64,14 @@ export default class BoardContainer extends React.Component{
             playersLoggedIn: this.state.playersLoggedIn,
             message: cableData.message
           })
+        },
+
+        connected: () => {
+          console.log("CONNECTED")
+          this.getCards()
+          .then(() =>
+            this.setState({ message: `${sessionStorage.getItem("User")} has joined!` }, () => this.updateTable() )
+          )    
         }
       })
       this.loggedIn()
@@ -96,6 +103,7 @@ export default class BoardContainer extends React.Component{
       })
     })
     .then( res => res.json() )
+    .then( this.setState({ tableID: table }))
   }
 
   getUsers(tableID){
@@ -117,12 +125,14 @@ export default class BoardContainer extends React.Component{
   }
 
   getCards(){
+
     return fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
     .then( res => res.json() )
     .then( data => this.setState({
       deckID: data.deck_id
     }))
-    // this.updateTable()
+
+    console.log("in getCards", this.state.deckID)// this.updateTable()
   }
 
   drawCard(num){
@@ -639,7 +649,7 @@ handlePlayerAction(playerName){
 
 render(){
 
-  console.log("cable", this.props.cableApp)
+  console.log("state", this.state)
   // console.log("DECK ID", this.state.deckID)
   if(this.state.dealt && this.state.deckID){
     let showCards
@@ -696,6 +706,7 @@ render(){
 
   return(
     <div className="full-board animated fadeIn">
+      {this.state.message ? <p className="animated pulse infinite board-text">{this.state.message}</p> : null}
 
       <div className="center-board ">
         {this.state.tableName ? <p className="animated zoomIn board-text">Welcome to {this.state.tableName}</p> : null}

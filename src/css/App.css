@@ -95,3 +95,57 @@ position: fixed;
 .center-text{
   text-align: center;
 }
+
+.jeeves{
+  display: inline-block;
+  width: 90%;
+  height: 40%;
+  vertical-align: top;
+  top: 20%;
+  padding: 0;
+  margin: 0;
+}
+
+.fulltable{
+  display: inline-block;
+  align-content: center;
+  margin: 0px auto;
+  background: white;
+  overflow: scroll;
+  height: 650px;
+  right: 10%;
+  position: absolute;
+}
+
+.t-headers {
+  text-align: center;
+}
+
+.t-data {
+  text-align: center;
+  width: 15%;
+}
+
+.cell{
+  padding: 24px;
+}
+
+.chip-count{
+  display: inline-block;
+  height: 10%;
+  width: 10%;
+  margin: 0;
+  padding: 0;
+}
+
+.image {
+   position: relative;
+
+}
+
+.chip-count-text {
+   position: absolute;
+   top: 25%;
+   left: 13%;
+   width: 100%;
+}

@@ -16,7 +16,7 @@ class LoginForm extends React.Component{
 
   componentDidMount(){
     if (sessionStorage.getItem("Authorization")){
-      this.props.history.push('/home')
+      this.props.history.push('/home/cashier')
     }
   }
 
