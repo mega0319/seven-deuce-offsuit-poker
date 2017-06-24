@@ -145,7 +145,11 @@ position: fixed;
 
 .chip-count-text {
    position: absolute;
-   top: 25%;
+   top: 23%;
    left: 13%;
    width: 100%;
+}
+
+.table-title{
+  text-align: center;
 }

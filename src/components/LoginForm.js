@@ -46,7 +46,7 @@ class LoginForm extends React.Component{
         sessionStorage.setItem('Error', data.error)
       }
     })
-    .then(() => this.props.history.push('/home'))
+    .then(() => this.props.history.push('/home/cashier'))
   }
 
   render(){

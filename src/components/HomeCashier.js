@@ -62,7 +62,7 @@ export default class HomeCashier extends React.Component{
 
 
         <table className="table-bordered table-striped fulltable">
-          <h4>Top Chip Counts</h4>
+          <h4 className="table-title">Top Chip Counts</h4>
           <tbody>
             <tr>
               <th className="t-headers cell">Player</th>
