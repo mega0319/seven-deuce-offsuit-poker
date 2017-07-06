@@ -71,7 +71,7 @@ export default class BoardContainer extends React.Component{
           this.getCards()
           .then(() =>
             this.setState({ message: `${sessionStorage.getItem("User")} has joined!` }, () => this.updateTable() )
-          )    
+          )
         }
       })
       this.loggedIn()
@@ -429,24 +429,29 @@ fold(playerName){
   let finalPosition = array[array.length - 1]
   let moreFoldedPlayers = this.state.foldedPlayers.concat(playerName)
 
-  if(this.state.foldedPlayers.length  === this.state.players.length - 2){
+  if (this.state.foldedPlayers.length  === this.state.players.length - 2){
     this.setState({
       foldedPlayers: moreFoldedPlayers, message: `${playerName} folds`
     }, () => {
       this.sortAndDeclareWinner()
     })
-  }else if(this.state.foldedPlayers.length === this.state.players.length - 1){
+  }else if (this.state.foldedPlayers.length === this.state.players.length - 1){
     this.setState({
       foldedPlayers: moreFoldedPlayers, message: "Nobody wins!"
     }, () => {
       this.sortAndDeclareWinner()
     })
 
+  }else if (finalPosition === this.state.currentPlayerPos && this.state.currentBet > 0){
+    this.setState({
+      foldedPlayers: moreFoldedPlayers, currentPlayerPos: this.playerPositioning(), message: `${playerName} folds`
+    }, () => {
+      this.updateTable()
+    })
   }else if (finalPosition === this.state.currentPlayerPos){
     this.setState({
       foldedPlayers: moreFoldedPlayers, message: `${playerName} folds`
     }, () => {
-
       this.nextCard()
     })
   }
