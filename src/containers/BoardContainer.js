@@ -25,7 +25,7 @@ export default class BoardContainer extends React.Component{
       currentBet: 0,
       bettorPosition: 0,
       pot: 0,
-      currentPlayerPos: 1,
+      currentPlayerPos: 2,
       winner: '',
       winningHand: '',
       message: '',
@@ -88,7 +88,7 @@ export default class BoardContainer extends React.Component{
 
   updatePlayerTable(){
     let id = parseInt(sessionStorage.getItem("user_id"), 10)
-    let table = this.state.tableID || parseInt(this.props.match.url.slice(-3), 10)
+    let table = this.state.tableID || parseInt(this.props.match.url.slice(-4), 10)
     return fetch(`http://${window.location.hostname}:3000/users/${id}`, {
       headers: {
         'Accept': 'application/json',
@@ -198,6 +198,11 @@ export default class BoardContainer extends React.Component{
     this.getUsers(this.state.tableID)
     .then( () => {
       console.log("STATE INSIDE PLAYERHAND", this.state)
+      let dealerIndex = this.state.dealerButtonPosition - 1
+      let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+      let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+      let players = firstHalfPlayers.concat(secondHalfPlayers)
+
       let newPlayerObjArr
       let arrayOfCards
       let num = parseInt(this.state.players.length, 10) * 2
@@ -205,7 +210,7 @@ export default class BoardContainer extends React.Component{
       .then( data => arrayOfCards = data.cards)
       .then( () => {
         newPlayerObjArr = this.state.players.map( (player, idx) => {
-          return { playerName: player.username, hand: arrayOfCards.splice(0,2) }
+          return { players: players, playerName: player.username, hand: arrayOfCards.splice(0,2) }
         })
       })
       .then( () => this.setState( { playerHand: newPlayerObjArr, dealt: true }, () => this.updateTable() ) )
@@ -276,6 +281,10 @@ export default class BoardContainer extends React.Component{
   }
 
   dealFlop(){
+    // let dealerIndex = this.state.dealerButtonPosition - 1
+    // let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+    // let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+    // let players = firstHalfPlayers.concat(secondHalfPlayers)
     let flop
     this.drawCard(3)
     .then( (data) => flop = data.cards )
@@ -288,10 +297,19 @@ export default class BoardContainer extends React.Component{
   }
 
   playerPositioning(){
-    let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
+    let dealerIndex = this.state.dealerButtonPosition - 1
+    let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+    let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+    let players = firstHalfPlayers.concat(secondHalfPlayers)
+
+    let positions = players.map( (player, idx) => [player.username, idx + 1] )
+
     let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
+
     let filteredActivePlayers = activePlayers.map ( playerAndIndex => playerAndIndex[1] )
+
     let index = filteredActivePlayers.indexOf(this.state.currentPlayerPos)
+
     if (index === filteredActivePlayers.length - 1){
       return filteredActivePlayers[0]
     }else{
@@ -304,6 +322,15 @@ export default class BoardContainer extends React.Component{
     let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
     return activePlayers.map ( playerAndIndex => playerAndIndex[1] )
   }
+
+  nextHandPosition(){
+    let dealerIndex = this.state.dealerButtonPosition - 1
+    let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+    let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+    let players = firstHalfPlayers.concat(secondHalfPlayers)
+  }
+
+
 
   nextCard(){
     if(this.state.board.length === 0){
@@ -613,7 +640,7 @@ redeal(){
     board: [],
     playerHand: [],
     activePlayers: playerNames,
-    currentPlayerPos: 1,
+    currentPlayerPos: this.newCardPlayerPosition(),
     phase: "pre-flop",
     dealt: false,
     foldedPlayers: [],
@@ -627,16 +654,21 @@ redeal(){
 }
 
 handleDealerButton(){
-  if (this.state.dealerButtonPosition === this.state.players.length){
-    return 1
-  }else{
-    return this.state.dealerButtonPosition + 1
-  }
+  // return (this.state.dealerButtonPosition + 1) % (this.state.players.length)
+  return ( (this.state.dealerButtonPosition ) % this.state.players.length) + 1
 }
 
+newCardPlayerPosition(){
+  return ( (this.state.dealerButtonPosition + 1 ) % this.state.players.length ) + 1
+  // return ( ( this.state.dealerButtonPosition + 1 ) % this.state.players.length)
+}
+// dp 1  3=> 2
+// dp 2 % 3=> 1
+// dp 1 + 1 % 3=> 1
+
 handlePlayerAction(playerName){
-  let array = this.playerPArray()
-  let finalPosition = array[array.length - 1]
+  // let array = this.playerPArray()
+  let finalPosition = this.state.dealerButtonPosition
   console.log("final position", finalPosition)
   console.log("currentPlayerPos", this.state.currentPlayerPos)
   if (this.state.currentPlayerPos === finalPosition ){

@@ -5,7 +5,7 @@ export default class MessageBox extends React.Component{
   constructor(props){
     super(props)
 
-    this.state ={
+    this.state = {
       input: '',
       messages: [],
       players:[]
