@@ -14,3 +14,25 @@ I enjoy the nuances of the game and getting all of the game behaviors working se
 ### Log-in Page
 
 ![Alt text](./screenshots/login.png?raw=true "Login Screen")
+
+Your standard log-in screen. Pretty straightforward authentication using bcrypt. The logo for
+my application was crafted using Adobe Illustrator.
+
+### Cashier
+
+![Alt text](./screenshots/cashier.png?raw=true "Cashier")
+
+Poker always has a serious tone to it. I decided to lighten the mood by creating this cashier, using
+Adobe Illustrator as well. On this page a user can add coins to their account simply by clicking on the register.
+
+### Poker Table
+
+![Alt text](./screenshots/table.png?raw=true "Poker Table")
+
+This is the view of the Poker Table, which was also created using Adobe Illustrator but with the help of my good friend and colleague Peter Chicarielli and a tutorial I found online which instructs one on how to create a pool table from scratch using Illustrator. With a few modifications and tweaks here and there we were able to create a poker table SVG.
+
+### Straight!
+
+![Alt text](./screenshots/straight.png?raw=true "Action")
+
+Here is a screenshot of some gameplay where I was holding a straight.
