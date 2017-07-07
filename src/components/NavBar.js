@@ -15,6 +15,7 @@ export default function NavBar(props){
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul className="nav navbar-nav">
             <li><Link to="/home/cashier">Home</Link></li>
+            <li><Link to="/home/rules">Rules</Link></li>
             <li><Link to="/home/newgame">New Table</Link></li>
             <li><Link to="/home/games">Find Table</Link></li>
 
