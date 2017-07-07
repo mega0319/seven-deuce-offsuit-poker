@@ -88,7 +88,7 @@ export default class BoardContainer extends React.Component{
 
   updatePlayerTable(){
     let id = parseInt(sessionStorage.getItem("user_id"), 10)
-    let table = this.state.tableID || parseInt(this.props.match.url.slice(-3), 10)
+    let table = this.state.tableID || parseInt(this.props.match.url.slice(-4), 10)
     return fetch(`http://${window.location.hostname}:3000/users/${id}`, {
       headers: {
         'Accept': 'application/json',
@@ -276,14 +276,14 @@ export default class BoardContainer extends React.Component{
   }
 
   dealFlop(){
-    let dealerIndex = this.state.dealerButtonPosition - 1
-    let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
-    let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
-    let players = firstHalfPlayers.concat(secondHalfPlayers)
+    // let dealerIndex = this.state.dealerButtonPosition - 1
+    // let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+    // let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+    // let players = firstHalfPlayers.concat(secondHalfPlayers)
     let flop
     this.drawCard(3)
     .then( (data) => flop = data.cards )
-    .then( () => this.setState( { board: flop, players: players, phase: "flop", currentPlayerPos: this.playerPositioning(), currentBet: 0 , bettorPosition: 0} ) )
+    .then( () => this.setState( { board: flop, phase: "flop", currentPlayerPos: this.playerPositioning(), currentBet: 0 , bettorPosition: 0} ) )
     .then( () => this.updateTable() )
   }
 
@@ -292,11 +292,11 @@ export default class BoardContainer extends React.Component{
   }
 
   playerPositioning(){
-    let dealerIndex = this.state.dealerButtonPosition - 1
-    let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
-    let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
-    let players = firstHalfPlayers.concat(secondHalfPlayers)
-    let positions = players.map( (player, idx) => [player.username, idx + 1] )
+    // let dealerIndex = this.state.dealerButtonPosition - 1
+    // let firstHalfPlayers = this.state.players.slice(dealerIndex + 1, this.state.players.length)
+    // let secondHalfPlayers = this.state.players.slice(0, dealerIndex + 1)
+    // let players = firstHalfPlayers.concat(secondHalfPlayers)
+    let positions = this.state.players.map( (player, idx) => [player.username, idx + 1] )
 
     let activePlayers = positions.filter( (playerAndIndex) => !this.state.foldedPlayers.includes(playerAndIndex[0]) )
 
