@@ -43,10 +43,10 @@ This is the view of the Poker Table, which was also created using Adobe Illustra
 
 ![Alt text](./screenshots/straight.png?raw=true "Action")
 
-Here is a screenshot of some gameplay where I was holding a straight. Every player is able to see his/her own cards and what hand they are currently holding. Built from scratch, the hand solving algorithms I wrote are able to calculate all 10 different hand types out of the roughly 2.6 million hand combinations.
+Here is a screenshot of some gameplay where I was holding a straight. Every player is able to see his/her own cards and what hand they are currently holding. Built from scratch, the hand solving algorithms I wrote are able to calculate all 10 different hand types out of the roughly 2.6 million hand combinations. On the bottom left, you can see the chatbox. Players are connected through a separate channel through ActionCable for real-time chatting.
 
 ### Rooms
 
 ![Alt text](./screenshots/rooms.png?raw=true "Rooms")
 
-You can select the room you want to join. Currently the room names are randomly generated Star Wars planets through a rails randomizer gem. 
+You can select the room you want to join. Currently the room names are randomly generated Star Wars planets through a rails randomizer gem.
