@@ -15,7 +15,7 @@
 .full-board{
   margin: 0 auto;
   background: #800020;
-  background-image: url('../PokerTable.svg');
+  background-image: url('../images/PokerTable.svg');
   background-size: contain;
   background-repeat: no-repeat;
   width: 1200px;

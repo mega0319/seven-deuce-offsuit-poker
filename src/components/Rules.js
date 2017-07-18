@@ -6,7 +6,7 @@ export default function Rules(){
     <div className="container-fluid">
 
 
-      <img className="animated fadeIn" src={require('../hand-rankings.jpg')} alt="" width="1400" height="750"/>
+      <img className="animated fadeIn" src={require('../images/hand-rankings.jpg')} alt="" width="1400" height="750"/>
 
     </div>
   )

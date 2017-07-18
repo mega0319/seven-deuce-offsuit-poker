@@ -234,8 +234,8 @@ export default class PlayerHand extends React.Component{
         return(
           <div>
 
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="105"/>
-            <img className="card animated rollIn" src={require('../backfinal.png')} alt="boohoo" width="80" height="105"/>
+            <img className="card animated rollIn" src={require('../images/backfinal.png')} alt="boohoo" width="80" height="105"/>
+            <img className="card animated rollIn" src={require('../images/backfinal.png')} alt="boohoo" width="80" height="105"/>
 
           </div>
         )

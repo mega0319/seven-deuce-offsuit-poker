@@ -57,7 +57,7 @@ class LoginForm extends React.Component{
 
         </div>
       <div className="full-form">
-        <img src={require('../SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
+        <img src={require('../images/SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
         {sessionStorage.getItem("Error") ? <p className="error">{sessionStorage.getItem("Error")}</p> : null}
         {sessionStorage.removeItem("Error")}
         <h3 className="board-text"> Please Log In </h3>

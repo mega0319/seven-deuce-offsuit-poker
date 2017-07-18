@@ -47,7 +47,7 @@ export default class Player extends React.Component{
     if (this.props.position === this.props.currentPlayerPos){
     return(
         <div className={` row position-${this.props.position}`}>
-          {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../btn.svg')} alt="" width="60" height="60"/> : null}
+          {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../images/btn.svg')} alt="" width="60" height="60"/> : null}
           {/* <p className='player-stats'> {this.props.position} </p> */}
           <p className='player-now animated flash player-stats'> {this.props.player.username}</p>
           <p className='player-stats'> chips: {this.state.playerChips} </p>
@@ -79,7 +79,7 @@ export default class Player extends React.Component{
       }else{
         return (
       <div className={`row position-${this.props.position}`}>
-        {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../btn.svg')} alt="" width="60" height="60"/> : null}
+        {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../images/btn.svg')} alt="" width="60" height="60"/> : null}
         <p className='player-stats'> {this.props.player.username}</p>
         <p className='player-stats'> chips: {this.state.playerChips} </p>
 

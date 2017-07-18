@@ -57,7 +57,7 @@ export default class HomeCashier extends React.Component{
     return (
       <div>
 
-        <img className="jeeves animated fadeIn" src={require('../Jeeves.svg')} onClick={ () => this.addChips() } alt="" width="700" height="900"/>
+        <img className="jeeves animated fadeIn" src={require('../images/Jeeves.svg')} onClick={ () => this.addChips() } alt="" width="700" height="900"/>
         <h4 className="chip-count-text">you have {this.state.chips}  chips</h4>
 
 

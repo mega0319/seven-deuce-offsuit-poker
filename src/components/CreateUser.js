@@ -42,7 +42,7 @@ render(){
   return (
     <div className="full-form container-fluid">
 
-      <img src={require('../SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
+      <img src={require('../images/SDOS_Logo-01.svg')} alt="" width="250" height="200"/>
 
       <h3 className="board-text"> Create A New Account </h3>
 
