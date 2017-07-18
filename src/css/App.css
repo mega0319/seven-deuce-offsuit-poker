@@ -1,6 +1,5 @@
 body {
   background: #800020;
-
 }
 
 .App {
@@ -65,8 +64,6 @@ float: left;
 top: 0;
 padding: none;
 position: fixed;
-
-
 }
 
 .front-page{
@@ -139,8 +136,7 @@ position: fixed;
 }
 
 .image {
-   position: relative;
-
+  position: relative;
 }
 
 .chip-count-text {
