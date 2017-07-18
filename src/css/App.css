@@ -57,13 +57,12 @@ body {
 }
 
 #background-video{
-
-height: 50%;
-width: 50%;
-float: left;
-top: 0;
-padding: none;
-position: fixed;
+  height: 50%;
+  width: 50%;
+  float: left;
+  top: 0;
+  padding: none;
+  position: fixed;
 }
 
 .front-page{
@@ -140,10 +139,10 @@ position: fixed;
 }
 
 .chip-count-text {
-   position: absolute;
-   top: 23%;
-   left: 13%;
-   width: 100%;
+  position: absolute;
+  top: 23%;
+  left: 13%;
+  width: 100%;
 }
 
 .table-title{

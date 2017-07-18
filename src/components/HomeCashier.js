@@ -19,7 +19,6 @@ export default class HomeCashier extends React.Component{
     .then( () => this.findSelf() )
   }
 
-
   findSelf(){
     return fetch(`http://${window.location.hostname}:3000/users/${parseInt(sessionStorage.getItem("user_id"))}`)
     .then( res => res.json() )
@@ -51,10 +50,10 @@ export default class HomeCashier extends React.Component{
 
   render(){
 
-
     let userData = this.state.players.map( player => <tr className="t-data"> <td className="cell">{player.username}</td> <td>${player.play_chips}</td></tr>)
 
     return (
+
       <div>
 
         <img className="jeeves animated fadeIn" src={require('../images/Jeeves.svg')} onClick={ () => this.addChips() } alt="" width="700" height="900"/>

@@ -163,9 +163,8 @@ export default class PlayerHand extends React.Component{
     this.props.reveal(handPlayerObj)
   }
 
-
   render(){
-    console.log("PLAYERHAND PROPS", this.props)
+
     if(this.state.hand && !this.state.folded && this.state.hand ){
 
       const fullHand = this.props.board.concat(this.props.hand)
@@ -178,12 +177,11 @@ export default class PlayerHand extends React.Component{
 
       let handSolve = preSolve.slice(1)
 
-
-
       if(this.props.currentPlayerPos === this.props.position && this.props.player === sessionStorage.getItem("User")){
         if(this.state.currentBet > 0){
           return(
             <div className="player-hand">
+
               {currentHand}
 
               {handSolve ? <p className="hand-solve board-text">{handSolve}</p> : null}
@@ -193,14 +191,14 @@ export default class PlayerHand extends React.Component{
               <button className="action-buttons btn btn-success" onClick={() => this.props.call(this.props.player)}> Call </button>
 
               <button className="action-buttons btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+
             </div>
           )
         }else{
           return(
             <div className="player-hand">
+
               {currentHand}
-
-
 
               {handSolve ? <p className="hand-solve board-text">{handSolve}</p> : null}
 
@@ -209,13 +207,13 @@ export default class PlayerHand extends React.Component{
               <button className="action-buttons btn btn-success" onClick={() => this.props.handlePlayerAction(this.props.player) }> Check </button>
 
               <button className="action-buttons btn btn-danger" onClick={() => this.props.fold(this.props.player) }> Fold </button>
+
             </div>
           )
         }
       }else if (this.props.player === sessionStorage.getItem("User")){
         return(
           <div className="player-hand">
-
 
             {currentHand}
 
@@ -226,7 +224,9 @@ export default class PlayerHand extends React.Component{
       }else if( this.props.phase === "round-end"){
         return (
           <div className="card animated fadeIn">
+
             {currentHand}
+
           </div>
         )
 

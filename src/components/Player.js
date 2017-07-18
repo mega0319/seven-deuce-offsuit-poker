@@ -27,25 +27,24 @@ export default class Player extends React.Component{
 
   userPatchRequest(chips){
     return fetch(`http://${window.location.hostname}:3000/users/${this.props.player.id}`, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "PATCH",
-        body: JSON.stringify( {user: {play_chips: chips} } )
-      })
-      .then( res => res.json() )
-      .then( data => this.setState({
-        playerChips: data.play_chips
-      }) )
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "PATCH",
+      body: JSON.stringify( {user: {play_chips: chips} } )
+    })
+    .then( res => res.json() )
+    .then( data => this.setState({
+      playerChips: data.play_chips
+    }) )
 
-    }
+  }
 
   render(){
 
-
     if (this.props.position === this.props.currentPlayerPos){
-    return(
+      return(
         <div className={` row position-${this.props.position}`}>
           {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../images/btn.svg')} alt="" width="60" height="60"/> : null}
           {/* <p className='player-stats'> {this.props.position} </p> */}
@@ -76,36 +75,36 @@ export default class Player extends React.Component{
           />
         </div>
       )
-      }else{
-        return (
-      <div className={`row position-${this.props.position}`}>
-        {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../images/btn.svg')} alt="" width="60" height="60"/> : null}
-        <p className='player-stats'> {this.props.player.username}</p>
-        <p className='player-stats'> chips: {this.state.playerChips} </p>
+    }else{
+      return (
+        <div className={`row position-${this.props.position}`}>
+          {this.props.dealer === this.props.position ? <img className="dlr-btn animated fadeIn" src={require('../images/btn.svg')} alt="" width="60" height="60"/> : null}
+          <p className='player-stats'> {this.props.player.username}</p>
+          <p className='player-stats'> chips: {this.state.playerChips} </p>
 
-        <PlayerHand
-          position={this.props.position}
-          currentPlayerPos={this.props.currentPlayerPos}
-          handlePlayerAction={(playerName) => this.props.handlePlayerAction(playerName)}
-          key={this.props.player.id}
-          player={this.props.player.username}
-          board={this.props.board}
-          hand={this.props.hand}
-          chips={this.state.playerChips}
-          nextCard={ () => this.props.nextCard() }
-          fold={ (playerName) => this.props.fold(playerName) }
-          bet={ (value, playerName, raise) => this.props.bet(value,playerName, raise) }
-          updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
-          reveal= { () => this.props.reveal() }
-          phase={this.props.phase}
-          redeal={() => this.props.redeal()}
-          foldedPlayers={this.props.foldedPlayers}
-          folded={this.props.folded}
-          currentBet={this.props.currentBet}
-          call={(playerName) => this.handleCall(playerName) }
-        />
-      </div>
-    )
+          <PlayerHand
+            position={this.props.position}
+            currentPlayerPos={this.props.currentPlayerPos}
+            handlePlayerAction={(playerName) => this.props.handlePlayerAction(playerName)}
+            key={this.props.player.id}
+            player={this.props.player.username}
+            board={this.props.board}
+            hand={this.props.hand}
+            chips={this.state.playerChips}
+            nextCard={ () => this.props.nextCard() }
+            fold={ (playerName) => this.props.fold(playerName) }
+            bet={ (value, playerName, raise) => this.props.bet(value,playerName, raise) }
+            updatePlayChips = { (betAmount) => this.updatePlayChips(betAmount) }
+            reveal= { () => this.props.reveal() }
+            phase={this.props.phase}
+            redeal={() => this.props.redeal()}
+            foldedPlayers={this.props.foldedPlayers}
+            folded={this.props.folded}
+            currentBet={this.props.currentBet}
+            call={(playerName) => this.handleCall(playerName) }
+          />
+        </div>
+      )
     }
 
   }

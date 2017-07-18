@@ -9,7 +9,6 @@ export default class AllGames extends React.Component{
     }
   }
 
-
   componentDidMount(){
     return fetch(`http://${window.location.hostname}:3000/poker_tables`)
     .then(res => res.json() )
@@ -17,7 +16,7 @@ export default class AllGames extends React.Component{
   }
 
   render(){
-    console.log(this.state.games)
+
     let allGames = this.state.games.map( game =>  {
       return (
         <div key={game.id} className="animated slideInLeft panel panel-danger">
@@ -33,8 +32,6 @@ export default class AllGames extends React.Component{
       )
     })
     let finalGames = allGames
-
-
     return(
 
       <div className="all-games-padding find-games">

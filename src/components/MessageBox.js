@@ -12,7 +12,6 @@ export default class MessageBox extends React.Component{
     }
   }
 
-
   componentDidMount(){
     return fetch(`http://${window.location.hostname}:3000/messages?pokertable_id=${this.props.tableID}`)
     .then( res => res.json() )
@@ -21,13 +20,11 @@ export default class MessageBox extends React.Component{
       this.setState({ messages: messages}, () => {
         this.props.cableApp.messageschannel = this.props.cableApp.cable.subscriptions.create('MessagesChannel',
         {
-
           received: (cableData) => {
             this.setState( { messages: [...this.state.messages, cableData] }) }
           })
         })
       })
-
     }
 
     componentDidUpdate(){
@@ -46,7 +43,6 @@ export default class MessageBox extends React.Component{
         }
       )
     }
-
 
     handleInputChange(e){
       this.setState({ input: e.target.value })
@@ -68,18 +64,18 @@ export default class MessageBox extends React.Component{
       }
       return(
         <div className="message-container">
-            <div className="animated fadeIn message-box">
+          <div className="animated fadeIn message-box">
 
-              <ul className="message-ul">
-                {allMessages}
-              </ul>
-            </div>
-            <div>
+            <ul className="message-ul">
+              {allMessages}
+            </ul>
+          </div>
+          <div>
 
-        </div>
-        <form className="message animated fadeIn" onSubmit={(e) => this.handleSubmit(e)}>
-          <input className="message-input animatedfadeIn" onChange={(e) => this.handleInputChange(e)} type="text" value={this.state.input} placeholder="Type message here" />
-        </form>
+          </div>
+          <form className="message animated fadeIn" onSubmit={(e) => this.handleSubmit(e)}>
+            <input className="message-input animatedfadeIn" onChange={(e) => this.handleInputChange(e)} type="text" value={this.state.input} placeholder="Type message here" />
+          </form>
         </div>
 
       )

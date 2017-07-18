@@ -34,8 +34,6 @@ export default class CreateUser extends React.Component {
     ),
     onCancel: () => this.props.history.push('/home')
   })
-
-
 }
 
 render(){

@@ -5,9 +5,7 @@ export default function Game(props){
 
   return(
     <div className="find-games game-container">
-
       <BoardContainer cableApp={props.cableApp}/>
-
     </div>
   )
 }

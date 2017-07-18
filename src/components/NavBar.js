@@ -8,7 +8,7 @@ export default function NavBar(props){
     <nav className="animated fadeIn navbar navbar-inverse">
       <div className='container-fluid'>
         <div className='navbar-header'>
-            <img className="navbar-brand nav-card-logo" src={require('../images/SDOS_Logo-01.svg')} alt="" width="65" height="50"/>
+          <img className="navbar-brand nav-card-logo" src={require('../images/SDOS_Logo-01.svg')} alt="" width="65" height="50"/>
 
         </div>
 
